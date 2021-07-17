@@ -1,0 +1,30 @@
+<!-- 
+  WEB322 Assignment 2
+  Name: Omar Khan
+  Student Number: 132197203
+  Email: okhan27@myseneca.ca
+  Section NCC
+  Date: 29/6/2021
+  Live demo: https://web322-a2-omar-khan.herokuapp.com/
+  github repo: https://github.com/lowsound42/web322a2
+  All the work in the project is my own except for stock photos, icons, and bootstrap files included
+ -->
+
+<body>
+  <div class="container bottom-buffer">
+    <div class="container holder top-buffer reg">
+      <h3 class="well bottom-buffer top-padding">Welcome to your Hoster dashboard, {{data.uname}}</h3>
+      {{#if data.login}}
+        <p>Your account is  <span class="dashboardSpan">ACTIVE</span></p>
+        <p>You have <span class="dashboardSpan">3</span> active web domains</p>
+        <p><span class="dashboardSpan">1</span> of your domains will expire in the next <span class="dashboardSpan">15</span> days</p>
+      {{/if}}
+      {{#if data.registration}}
+        <p>You can start by purchasing a new domain!</p>
+      {{/if}}
+    </div>
+  </div>
+  <script src="./bootstrap-5.0.1-dist/js/bootstrap.bundle.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,154 @@
+<!-- 
+  WEB322 Assignment 2
+  Name: Omar Khan
+  Student Number: 132197203
+  Email: okhan27@myseneca.ca
+  Section NCC
+  Date: 29/6/2021
+  Live demo: https://web322-a2-omar-khan.herokuapp.com/
+  github repo: https://github.com/lowsound42/web322a2
+  All the work in the project is my own except for stock photos, icons, and bootstrap files included
+ -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Hoster | Register</title>
+  <link rel="shortcut icon" type="image/jpg" href="/assets/favicon.ico" />
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="./bootstrap-5.0.1-dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./styles/custom.css">
+</head>
+
+<body class="gradient">
+  <div class="container">
+    <div class="container top-buffer reg formHolder">
+      <h1 class="well">Registration Form</h1>
+      <div class="col-lg-12 well">
+        <div class="row">
+          <form action="/registration" method="POST">
+            <div class="col-sm-12">
+              <fieldset>
+                <legend>Personal Information</legend>
+                <div class="row">
+                  <div class="col-sm-6 form-group">
+                    <label for="fname">First Name</label>
+                    <input id="fname" name="fname" type="text" placeholder="First Name" value="{{data.fname}}" class="form-control">
+                  </div>
+                  <div class="col-sm-6 form-group">
+                    <label for="lname">Last Name</label>
+                    <input id="lname" name="lname" type="text" placeholder="Last Name" value="{{data.lname}}" class="form-control">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-6 form-group top-buffer">
+                    <label for="uname">Username</label>
+                    <input id="uname" name="uname" type="text" placeholder="Username" value="{{data.uname}}"class="form-control">
+                  </div>
+                  {{#if data.uError}}
+                    <p class="error">{{data.uError}}</p>
+                  {{/if}}
+                  <div class="col-sm-6 form-group top-buffer">
+                    <label for="pword">Password</label>
+                    <input id="pword" name="pword" type="password" placeholder="Password" class="form-control">
+                    {{#if data.pError}}
+                    <p class="error">{{data.pError}}</p>
+                    {{/if}}
+                  </div>
+                </div>
+                <div class="row top-buffer">
+                  <div class=" col-sm-6 form-group">
+                    <label for="phone">Phone Number</label>
+                    <input id="phone" name="phone" type="text" placeholder="Phone" value="{{data.phone}}" class="form-control">
+                    {{#if data.telError}}
+                    <p class="error">{{data.telError}}</p>
+                    {{/if}}
+                  </div>
+                  <div class="col-sm-6 form-group">
+                    <label for="emailadd">Email Address</label>
+                    <input id="emailadd" name="emailadd" type="email" placeholder="Email" value="{{data.emailadd}}" class="form-control">
+                    {{#if data.emailError}}
+                    <p class="error">{{data.emailError}}</p>
+                    {{/if}}
+                  </div>
+                </div>
+              </fieldset>
+              <fieldset class="top-buffer">
+                <legend>Billing Address</legend>
+                <div class="form-group">
+                  <label for="company">Company</label>
+                  <input id="company" name="company" type="text" placeholder="Company Name" value="{{data.company}}" class="form-control">
+                </div>
+                <div class="form-group top-buffer">
+                  <label for="addressone">Street Address 1</label>
+                  <textarea id="addressone" name="addressone" placeholder="Street Address 1" value="{{data.addressone}}" rows="1"
+                    class="form-control"></textarea>
+                    {{#if data.addError}}
+                   <p class="error">{{data.addError}}</p>
+                   {{/if}}
+                </div>
+                <div class="form-group top-buffer">
+                  <label for="addresstwo">Street Address 2</label>
+                  <textarea id="addresstwo" name="addresstwo" placeholder=" Street Address 2" value="{{data.addresstwo}}" rows="1"
+                    class="form-control"></textarea>
+                </div>
+              </fieldset>
+              <div class="row top-buffer">
+                <div class="col-sm-4 form-group">
+                  <label for="city">City</label>
+                  <input id="city" name="city" type="text" placeholder="City" value="{{data.city}}" class="form-control">
+                  {{#if data.cityError}}
+                  <p class="error">{{data.cityError}}</p>
+                  {{/if}}
+                </div>
+                <div class="col-sm-4 form-group">
+                  <label for="province">Province</label>
+                  <input id="province" name="province" type="text" placeholder="State" value="{{data.province}}" class="form-control">
+                  {{#if data.provError}}
+                  <p class="error">{{data.provError}}</p>
+                  {{/if}}
+                </div>
+                <div class="col-sm-4 form-group">
+                  <label for="postal">Postal Code</label>
+                  <input id="postal" name="postal" type="text" placeholder="Postal Code" value="{{data.postal}}" class="form-control">
+                  {{#if data.postalError}}
+                  <p class="error">{{data.postalError}}</p>
+                  {{/if}}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6 form-group top-buffer">
+                  <label for="country" class="sr-only">Country</label>
+                  <input id="country" name="country" type="text" placeholder="Country" value="{{data.country}}" class="form-control">
+                  {{#if data.countryError}}
+                  <p class="error">{{data.countryError}}</p>
+                  {{/if}}
+                </div>
+              </div>
+              {{!-- <div class="form-group top-buffer">
+                <label for="taxid">Tax ID</label>
+                <input id="taxid" name="taxid" type="text" placeholder="Tax ID" value="{{data.taxid}}" class="form-control">
+                {{#if data.taxError}}
+                <p class="error">{{data.taxError}}</p>
+                {{/if}}
+              </div> --}}
+              <input type="submit" class="btn btn-md btn-info top-buffer bottom-buffer" value="Submit" />
+            </div>
+          </form>
+          <div class="spec-flex">
+            <p>Already a client?</p>
+            <form action="/login">
+              <button type="submit" class="btn btn-sm btn-info" value="Login">Login</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  <script src="./bootstrap-5.0.1-dist/js/bootstrap.bundle.js"></script>
+</body>
+
+</html>

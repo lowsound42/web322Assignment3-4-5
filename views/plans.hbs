@@ -1,0 +1,49 @@
+<!-- 
+  WEB322 Assignment 2
+  Name: Omar Khan
+  Student Number: 132197203
+  Email: okhan27@myseneca.ca
+  Section NCC
+  Date: 29/6/2021
+  Live demo: https://web322-a2-omar-khan.herokuapp.com/
+  github repo: https://github.com/lowsound42/web322a2
+  All the work in the project is my own except for stock photos, icons, and bootstrap files included
+ -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Hoster | Plans</title>
+  <link rel="shortcut icon" type="image/jpg" href="/assets/favicon.ico" />
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css"
+    integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+  <link rel="stylesheet" href="./bootstrap-5.0.1-dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./styles/custom.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+      <div class=" col-sm-20 col-lg-6">
+        <img src="./assets/javier-allegue-barros-C7B-ExXpOIE-unsplash.jpg" class="d-block mx-lg-auto img-fluid"
+          alt="Bootstrap Themes" width="800" loading="lazy">
+      </div>
+      <div class="col-lg-6">
+        <h1 class="display-5 fw-bold lh-1 mb-3">Three options to meet your specific needs</h1>
+        <p class="lead">We've got three prices to cater to your website and what you want to get out of it.</p>
+      </div>
+    </div>
+  </div>
+  <div class="container bottom-buffer">
+  {{>card_partial parameter=data}}
+  </div>
+  <script src="./bootstrap-5.0.1-dist/js/bootstrap.bundle.js"></script>
+  <script type="module" src='./scripts.js'>  </script>
+</body>
+
+</html>

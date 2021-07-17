@@ -1,0 +1,38 @@
+<!-- 
+  WEB322 Assignment 2
+  Name: Omar Khan
+  Student Number: 132197203
+  Email: okhan27@myseneca.ca
+  Section NCC
+  Date: 29/6/2021
+  Live demo: https://web322-a2-omar-khan.herokuapp.com/
+  github repo: https://github.com/lowsound42/web322a2
+  All the work in the project is my own except for stock photos, icons, and bootstrap files included
+ -->
+  <nav class="navbar navbar-expand-lg navbar-light special">
+      <div class="container">
+        <a href="/"><img src="assets/navlogo.png" alt="hoster logo" width="200" /></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02"
+          aria-controls="navbarTogglerDemo02"aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse justify-content-end" id="navbarTogglerDemo02">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link {{#if page.home}} active{{/if}}"  {{#if page.home}} aria-current="page" {{/if}} href="/">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {{#if page.plan}} active{{/if}}"  {{#if page.plan}} aria-current="page" {{/if}} href="/plans">Plans</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {{#if page.registration}} active{{/if}}"  {{#if page.registration}} aria-current="/page" {{/if}} href="
+                /registration">Registration</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {{#if page.login}} active{{/if}}"  {{#if page.login}} aria-current="page" {{/if}}  href="/login">Login</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>

@@ -1,0 +1,98 @@
+/* 
+  WEB322 Assignment 2
+  Name: Omar Khan
+  Student Number: 132197203
+  Email: okhan27@myseneca.ca
+  Section NCC
+  Date: 29/06/2021
+  All the work in the project is my own except for stock photos, icons, and bootstrap files included
+  Live demo: https://web322-a2-omar-khan.herokuapp.com/
+  github repo: https://github.com/lowsound42/web322a2
+  */
+
+.top-buffer {
+    margin-top: 40px;
+}
+
+.bottom-buffer {
+    margin-bottom: 40px;
+}
+
+.gradient {
+    background: #097ffa linear-gradient(40deg, #c0242e 0, #097ffa 100%) fixed !important;
+}
+
+.holder {
+    background-color: white;
+    width: 60%;
+}
+
+.rounded {
+    border-radius: 20%;
+}
+
+.special {
+    background-color: #ffffff;
+}
+
+.card-list {
+    border: 1px black solid;
+}
+
+.card-body-special {
+    margin: 0rem 1rem;
+}
+
+.reg {
+    border-radius: 20px;
+    padding: 2rem;
+}
+
+.top-padding {
+    padding-top: 20px;
+}
+
+.spec-flex {
+    display: flex;
+    flex-direction: column;
+    height: 5rem;
+    justify-content: space-evenly;
+}
+
+.card-img-top {
+    width: 100%;
+    height: 15vw;
+    object-fit: cover;
+}
+
+.spec-flex p {
+    margin-bottom: 0;
+}
+
+.remember {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.spec-404-image {
+    display: block;
+    margin: 0 auto;
+}
+
+.remember label {
+    margin-left: 1rem;
+}
+
+.error {
+    color: #ff0000;
+    font-size: 0.8rem;
+}
+
+.dashboardSpan {
+    font-weight: bold;
+}
+
+.formHolder {
+    background-color: white;
+}
