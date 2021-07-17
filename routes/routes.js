@@ -15,13 +15,24 @@ router.use(
 );
 
 router.get('/', (req, res) => {
+    let sesh = { sesh: false };
+    if (req.session.email) {
+        sesh.sesh = true;
+    }
+
+    console.log(sesh);
     const page = { home: true };
     res.render('index', {
-        page: page
+        page: page,
+        sesh: sesh
     });
 });
 
 router.get('/plans', (req, res) => {
+    let sesh = { sesh: false };
+    if (req.session.email) {
+        sesh.sesh = true;
+    }
     const data = [
         {
             personal: true,
@@ -85,7 +96,8 @@ router.get('/plans', (req, res) => {
     const page = { plan: true };
     res.render('plans', {
         data: data,
-        page: page
+        page: page,
+        sesh: sesh
     });
 });
 
@@ -124,6 +136,7 @@ router.post('/login', (req, res) => {
         formData.emailError === false
     ) {
         console.log(formData);
+        const sesh = req.session;
         User.findOne({ email: formData.email })
             .exec()
             .then((user) => {
@@ -136,9 +149,10 @@ router.post('/login', (req, res) => {
                                 req.session = {
                                     data: formData,
                                     page: { dashboard: true },
-                                    layout: 'form',
+                                    layout: 'main',
                                     email: formData.email,
-                                    origin: 1
+                                    origin: 1,
+                                    sesh: { sesh: true }
                                 };
                                 res.redirect('/dashboard');
                             } else {
@@ -179,13 +193,16 @@ router.get('/dashboard', ensureLogin, (req, res) => {
         email: req.session.email,
         data: req.session.data,
         page: req.session.page,
-        layout: req.session.layout
+        layout: req.session.layout,
+        sesh: req.session.sesh
     });
 });
 
 router.post('/registration', (req, res) => {
     let formData = validation.regValidation(req.body);
     console.log(formData);
+    const sesh = req.session;
+
     if (
         formData.pword.length > 0 &&
         formData.pError === false &&
@@ -225,8 +242,9 @@ router.post('/registration', (req, res) => {
                     req.session = {
                         data: formData,
                         page: { dashboard: true },
-                        layout: 'form',
+                        layout: 'main',
                         origin: 2,
+                        sesh: { sesh: true },
                         email: formData.emailadd
                     };
                     console.log('User saved!');

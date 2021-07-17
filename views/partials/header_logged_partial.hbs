@@ -25,20 +25,9 @@
             <li class="nav-item">
               <a class="nav-link {{#if page.plan}} active{{/if}}"  {{#if page.plan}} aria-current="page" {{/if}} href="/plans">Plans</a>
             </li>
-            {{#unless sesh.sesh}}
             <li class="nav-item">
-              <a class="nav-link {{#if page.registration}} active{{/if}}"  {{#if page.registration}} aria-current="/page" {{/if}} href="
-                /registration">Registration</a>
+              <a class="nav-link {{#if page.dashboard}} active{{/if}}"  {{#if page.dashboard}} aria-current="page" {{/if}} href="/dashboard">Dashboard</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link {{#if page.login}} active{{/if}}"  {{#if page.login}} aria-current="page" {{/if}}  href="/login">Login</a>
-            </li>
-            {{/unless}}
-              {{#if sesh.sesh}}
-                <li class="nav-item">
-                <a class="nav-link {{#if page.dashboard}} active{{/if}}"  {{#if page.dashboard}} aria-current="page" {{/if}}  href="/dashboard">Dashboard</a>
-            </li>
-            {{/if}}
           </ul>
         </div>
       </div>
