@@ -3,6 +3,16 @@ var validation = require('../services/validation');
 let User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const saltRounds = 10;
+const clientSessions = require('client-sessions');
+
+router.use(
+    clientSessions({
+        cookieName: 'session', // this is the object name that will be added to 'req'
+        secret: 'hosterShmoster6524', // this should be a long un-guessable string.
+        duration: 2 * 60 * 1000, // duration of the session in milliseconds (2 minutes)
+        activeDuration: 1000 * 60 // the session will be extended by this many ms each request (1 minute)
+    })
+);
 
 router.get('/', (req, res) => {
     const page = { home: true };
@@ -80,6 +90,10 @@ router.get('/plans', (req, res) => {
 });
 
 router.get('/login', (req, res) => {
+    if (req.session.email) {
+        console.log('test');
+        res.redirect('/dashboard');
+    }
     const page = { login: true };
     res.render('login', {
         page: page,
@@ -88,6 +102,10 @@ router.get('/login', (req, res) => {
 });
 
 router.get('/registration', (req, res) => {
+    if (req.session.email) {
+        console.log('test');
+        res.redirect('/dashboard');
+    }
     const page = { registration: true };
     res.render('registration', {
         page: page,
@@ -97,8 +115,9 @@ router.get('/registration', (req, res) => {
 
 router.post('/login', (req, res) => {
     let formData = validation.logValidation(req.body);
-    console.log(formData);
 
+    console.log(formData);
+    const dbError = { loginError: true };
     if (
         formData.password.length > 0 &&
         formData.pError === false &&
@@ -114,14 +133,18 @@ router.post('/login', (req, res) => {
                         user.password,
                         function (err, response) {
                             if (response) {
-                                res.render('dashboard', {
+                                req.session = {
                                     data: formData,
                                     page: { dashboard: true },
-                                    layout: 'form'
-                                });
+                                    layout: 'form',
+                                    email: formData.email,
+                                    origin: 1
+                                };
+                                res.redirect('/dashboard');
                             } else {
                                 res.render('login', {
                                     data: formData,
+                                    dbError: dbError,
                                     page: { login: true },
                                     layout: 'form'
                                 });
@@ -132,11 +155,37 @@ router.post('/login', (req, res) => {
                     console.log('no user found');
                 }
             });
+    } else {
+        res.render('login', {
+            data: formData,
+            layout: 'form'
+        });
     }
+});
+
+function ensureLogin(req, res, next) {
+    if (!req.session.email && req.session.origin === 1) {
+        res.redirect('/login');
+    } else if (!req.session.email && req.session.origin === 2) {
+        res.redirect('/registration');
+    } else {
+        next();
+    }
+}
+
+router.get('/dashboard', ensureLogin, (req, res) => {
+    console.log(req.session);
+    res.render('dashboard', {
+        email: req.session.email,
+        data: req.session.data,
+        page: req.session.page,
+        layout: req.session.layout
+    });
 });
 
 router.post('/registration', (req, res) => {
     let formData = validation.regValidation(req.body);
+    console.log(formData);
     if (
         formData.pword.length > 0 &&
         formData.pError === false &&
@@ -166,19 +215,36 @@ router.post('/registration', (req, res) => {
             });
             userInfo.save((err) => {
                 if (err) {
+                    console.log(err);
                     res.render('registration', {
                         data: formData,
+                        dbError: { regError: true },
                         layout: 'form'
                     });
                 } else {
+                    req.session = {
+                        data: formData,
+                        page: { dashboard: true },
+                        layout: 'form',
+                        origin: 2,
+                        email: formData.emailadd
+                    };
                     console.log('User saved!');
-                    res.render('dashboard', {
-                        data: formData
-                    });
+                    res.redirect('dashboard');
                 }
             });
         });
+    } else {
+        res.render('registration', {
+            data: formData,
+            layout: 'form'
+        });
     }
+});
+
+router.get('/logout', function (req, res) {
+    req.session.reset();
+    res.redirect('/login');
 });
 
 module.exports = router;

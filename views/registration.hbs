@@ -32,6 +32,9 @@
         <div class="row">
           <form action="/registration" method="POST">
             <div class="col-sm-12">
+              {{#if dbError.regError}}
+              <p class="error">The email you entered is already in use!</p>
+              {{/if}}
               <fieldset>
                 <legend>Personal Information</legend>
                 <div class="row">

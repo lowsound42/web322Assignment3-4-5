@@ -18,7 +18,9 @@
         <div class="row">
           <form action="/login" method="Post">
             <div class="col-sm-12">
-
+              {{#if dbError.loginError}}
+              <p class="error">The password you entered was wrong!</p>
+              {{/if}}
               <div class="row">
                 <div class="col-lg-12 form-group">
                   <label for="email">Email Address</label>
