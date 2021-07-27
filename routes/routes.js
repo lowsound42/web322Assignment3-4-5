@@ -128,7 +128,6 @@ router.get('/registration', (req, res) => {
 router.post('/login', (req, res) => {
     let formData = validation.logValidation(req.body);
 
-    console.log(formData);
     const dbError = { loginError: true };
     if (
         formData.password.length > 0 &&
@@ -141,12 +140,18 @@ router.post('/login', (req, res) => {
             .exec()
             .then((user) => {
                 if (user) {
+                    console.log('__________________________');
+                    console.log(user);
+                    console.log(user.company);
+                    console.log(user._id);
+                    console.log('__________________________');
                     bcrypt.compare(
                         formData.password,
                         user.password,
                         function (err, response) {
                             if (response) {
                                 req.session = {
+                                    admin: user.admin,
                                     data: formData,
                                     page: { dashboard: true },
                                     layout: 'main',
@@ -189,13 +194,23 @@ function ensureLogin(req, res, next) {
 
 router.get('/dashboard', ensureLogin, (req, res) => {
     console.log(req.session);
-    res.render('dashboard', {
-        email: req.session.email,
-        data: req.session.data,
-        page: req.session.page,
-        layout: req.session.layout,
-        sesh: req.session.sesh
-    });
+    if (req.session.admin) {
+        res.render('adminDashboard', {
+            email: req.session.email,
+            data: req.session.data,
+            page: req.session.page,
+            layout: req.session.layout,
+            sesh: req.session.sesh
+        });
+    } else {
+        res.render('dashboard', {
+            email: req.session.email,
+            data: req.session.data,
+            page: req.session.page,
+            layout: req.session.layout,
+            sesh: req.session.sesh
+        });
+    }
 });
 
 router.post('/registration', (req, res) => {

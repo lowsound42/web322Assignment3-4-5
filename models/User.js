@@ -12,7 +12,8 @@ const userSchema = new Schema({
     postal: String,
     addresstwo: { type: String, default: 'N/A' },
     province: String,
-    company: { type: String, default: 'N/A' }
+    company: { type: String, default: 'N/A' },
+    admin: Boolean
 });
 
 let User = mongoose.model('user', userSchema);
