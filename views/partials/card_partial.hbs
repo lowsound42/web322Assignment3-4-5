@@ -14,15 +14,6 @@
       {{#each data}}
       <div class=" col-lg card card-body-special" id="card">
         <div class="card-body">
-          {{#if this.personal}}
-            <i class="fas fa-2x fa-portrait"></i>
-          {{/if}}
-          {{#if this.pro}}
-            <i class="fas fa-2x fa-briefcase"></i>
-          {{/if}}
-          {{#if this.enterprise}}
-            <i class="fas fa-2x fa-building"></i>
-          {{/if}}
           <h5 class="card-title">{{this.title}}</h5>
           <p class="card-text">{{this.description}}</p>
           <p class="card-text">{{this.price}}</p>

@@ -1,0 +1,61 @@
+<!-- 
+  WEB322 Assignment 2
+  Name: Omar Khan
+  Student Number: 132197203
+  Email: okhan27@myseneca.ca
+  Section NCC
+  Date: 29/6/2021
+  Live demo: https://web322-a2-omar-khan.herokuapp.com/
+  github repo: https://github.com/lowsound42/web322a2
+  All the work in the project is my own except for stock photos, icons, and bootstrap files included
+ -->
+
+<body class="gradient">
+    <div class="container bottom-buffer">
+    <div class="container formHolder top-buffer reg">
+      <h3 class="well bottom-buffer top-padding">Sign in to your Hoster account</h3>
+      <div class="col-lg-12 well">
+        <div class="row">
+          <form action="/login" method="Post">
+            <div class="col-sm-12">
+              {{#if dbError.loginError}}
+              <p class="error">The password you entered was wrong!</p>
+              {{/if}}
+              <div class="row">
+                <div class="col-lg-12 form-group">
+                  <label for="email">Email Address</label>
+                  <input id="email" name="email" type="text" placeholder="Email Address" class="form-control">
+                  {{#if data.emailError}}
+                  <p class="error">{{data.emailError}}</p>
+                  {{/if}}
+                </div>
+              </div>
+              <div class="row top-buffer">
+                <div class="col-lg-12 form-group ">
+                  <label for="password">Password</label>
+                  <input id="password" name="password" type="password" placeholder="Password" class="form-control">
+                  {{#if data.pError}}
+                  <p class="error">{{data.pError}}</p>
+                  {{/if}}
+                </div>
+              </div>
+              <div class="remember-me top-buffer"> <input type="checkbox" id="remember-me" value="1" name="remember-me">
+                <label for="remember-me">Remember me</label>
+              </div>
+              <input type="submit" class="btn btn-md btn-info  bottom-buffer" value="Submit" />
+            </div>
+          </form>
+          <div class="spec-flex">
+            <p>New to Hoster?</p>
+            <form action="/registration">
+              <button type="submit" class="btn btn-sm btn-info" value="Sign Up">Sign Up</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="./bootstrap-5.0.1-dist/js/bootstrap.bundle.js"></script>
+</body>
+
+</html>

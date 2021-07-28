@@ -96,3 +96,13 @@
 .formHolder {
     background-color: white;
 }
+
+.flexDash {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.logout {
+    justify-self: end;
+}

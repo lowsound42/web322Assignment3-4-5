@@ -1,6 +1,7 @@
 let router = require('express').Router();
 var validation = require('../services/validation');
 let User = require('../models/User');
+let Plan = require('../models/Plan');
 const bcrypt = require('bcryptjs');
 const saltRounds = 10;
 const clientSessions = require('client-sessions');
@@ -28,77 +29,31 @@ router.get('/', (req, res) => {
     });
 });
 
+router.get('/planData', (req, res) => {
+    Plan.find()
+        .lean()
+        .exec()
+        .then((response) => {
+            res.send(response);
+        });
+});
+
 router.get('/plans', (req, res) => {
     let sesh = { sesh: false };
     if (req.session.email) {
         sesh.sesh = true;
     }
-    const data = [
-        {
-            personal: true,
-            title: 'Personal',
-            description: 'Affordable plan, great for personal projects',
-            price: 'C$3.89/mo',
-            items: [
-                'STARTER Performance',
-                'Single Website',
-                'Unlimited Space and Traffic',
-                'Powered by renewable energy',
-                'All-inclusive STARTER email',
-                'Standard hosting features',
-                'Free site migration'
-            ]
-        },
-        {
-            pro: true,
-            title: 'Pro',
-            description:
-                'Pro performance, premium features, free domain, and more!',
-            price: 'C$3.92/mo',
-            items: [
-                'PRO Performance',
-                'Unlimited Websites',
-                'Unlimited Space and Traffic',
-                'Powered by renewable energy',
-                'All-inclusive PRO email',
-                'Standard hosting features',
-                'Free site migration',
-                'Free domain',
-                'Optimized for WordPress',
-                'Premium Features',
-                'Email Marketing',
-                'SSL certificate'
-            ]
-        },
-        {
-            enterprise: true,
-            title: 'Enterprise',
-            description:
-                'Best performance for demanding websites, with SSL & dedicated IP',
-            price: 'C$11.89/mo',
-            items: [
-                'ENTERPRISE Performance',
-                'Unlimited Websites',
-                'Unlimited Space and Traffic',
-                'Powered by renewable energy',
-                'All-inclusive ENTERPRISE email',
-                'Standard hosting features',
-                'Free site migration',
-                'Free domain',
-                'Optimized for WordPress',
-                'Premium Features',
-                'Email Marketing',
-                'SSL certificate',
-                'Dedicated IP'
-            ]
-        }
-    ];
-    const page = { plan: true };
-    res.render('plans', {
-        data: data,
-        page: page,
-        sesh: sesh
-    });
+    Plan.find()
+        .lean()
+        .exec()
+        .then((response) => {
+            const page = { plan: true };
+            res.render('plans', {
+                data: response,
+                page: page,
+                sesh: sesh
+            });
+        });
 });
 
 router.get('/login', (req, res) => {
@@ -140,11 +95,6 @@ router.post('/login', (req, res) => {
             .exec()
             .then((user) => {
                 if (user) {
-                    console.log('__________________________');
-                    console.log(user);
-                    console.log(user.company);
-                    console.log(user._id);
-                    console.log('__________________________');
                     bcrypt.compare(
                         formData.password,
                         user.password,
@@ -152,13 +102,16 @@ router.post('/login', (req, res) => {
                             if (response) {
                                 req.session = {
                                     admin: user.admin,
-                                    data: formData,
+                                    data: user,
                                     page: { dashboard: true },
                                     layout: 'main',
                                     email: formData.email,
                                     origin: 1,
                                     sesh: { sesh: true }
                                 };
+                                console.log('__________________________');
+                                console.log(user);
+                                console.log('__________________________');
                                 res.redirect('/dashboard');
                             } else {
                                 res.render('login', {
@@ -193,7 +146,6 @@ function ensureLogin(req, res, next) {
 }
 
 router.get('/dashboard', ensureLogin, (req, res) => {
-    console.log(req.session);
     if (req.session.admin) {
         res.render('adminDashboard', {
             email: req.session.email,
@@ -243,7 +195,8 @@ router.post('/registration', (req, res) => {
                 postal: formData.postal,
                 addresstwo: formData.addresstwo,
                 province: formData.province,
-                company: formData.company
+                company: formData.company,
+                admin: false
             });
             userInfo.save((err) => {
                 if (err) {
