@@ -10,18 +10,28 @@ router.use(
     clientSessions({
         cookieName: 'session', // this is the object name that will be added to 'req'
         secret: 'hosterShmoster6524', // this should be a long un-guessable string.
-        duration: 2 * 60 * 1000, // duration of the session in milliseconds (2 minutes)
-        activeDuration: 1000 * 60 // the session will be extended by this many ms each request (1 minute)
+        duration: 5 * 60 * 1000, // duration of the session in milliseconds (2 minutes)
+        activeDuration: 2 * 1000 * 60 // the session will be extended by this many ms each request (1 minute)
     })
 );
+
+function ensureLogin(req, res, next) {
+    User.findOne({ email: req.session.email })
+        .exec()
+        .then((user) => {
+            if (req.session.email && user) {
+                next();
+            } else {
+                res.redirect('/');
+            }
+        });
+}
 
 router.get('/', (req, res) => {
     let sesh = { sesh: false };
     if (req.session.email) {
         sesh.sesh = true;
     }
-
-    console.log(sesh);
     const page = { home: true };
     res.render('index', {
         page: page,
@@ -54,6 +64,24 @@ router.get('/plans', (req, res) => {
                 sesh: sesh
             });
         });
+});
+
+router.post('/uploadPlan', (req, res) => {
+    console.log(req.body);
+    var newPlan = new Plan({
+        title: req.body.title,
+        description: req.body.description,
+        price: String(req.body.price),
+        items: req.body.items
+    });
+
+    newPlan.save((err) => {
+        if (err) {
+            console.log('Error saving the plan');
+        } else {
+            console.log('Plan saved!');
+        }
+    });
 });
 
 router.get('/login', (req, res) => {
@@ -104,7 +132,7 @@ router.post('/login', (req, res) => {
                                     admin: user.admin,
                                     data: user,
                                     page: { dashboard: true },
-                                    layout: 'main',
+                                    layout: 'mainLogged',
                                     email: formData.email,
                                     origin: 1,
                                     sesh: { sesh: true }
@@ -124,7 +152,14 @@ router.post('/login', (req, res) => {
                         }
                     );
                 } else {
+                    const dbError = { noUserError: true };
                     console.log('no user found');
+                    res.render('login', {
+                        data: formData,
+                        dbError: dbError,
+                        page: { login: true },
+                        layout: 'form'
+                    });
                 }
             });
     } else {
@@ -135,18 +170,9 @@ router.post('/login', (req, res) => {
     }
 });
 
-function ensureLogin(req, res, next) {
-    if (!req.session.email && req.session.origin === 1) {
-        res.redirect('/login');
-    } else if (!req.session.email && req.session.origin === 2) {
-        res.redirect('/registration');
-    } else {
-        next();
-    }
-}
-
 router.get('/dashboard', ensureLogin, (req, res) => {
     if (req.session.admin) {
+        console.log(req.session.layout);
         res.render('adminDashboard', {
             email: req.session.email,
             data: req.session.data,
@@ -210,7 +236,7 @@ router.post('/registration', (req, res) => {
                     req.session = {
                         data: formData,
                         page: { dashboard: true },
-                        layout: 'main',
+                        layout: 'mainLogged',
                         origin: 2,
                         sesh: { sesh: true },
                         email: formData.emailadd

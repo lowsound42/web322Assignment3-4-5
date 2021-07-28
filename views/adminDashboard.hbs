@@ -20,57 +20,20 @@
         <p>You have <span class="dashboardSpan">3</span> active web domains</p>
         <p><span class="dashboardSpan">1</span> of your domains will expire in the next <span class="dashboardSpan">15</span> days</p>
       {{/if}}
-      <button class="btn btn-primary btn-md px-4 me-md-2" onclick='viewPlans()'>View Plans</button>
+      <button class="btn btn-primary btn-md px-4 me-md-2" onclick="viewPlans();">View Plans</button>
+            <button class="btn btn-primary btn-md px-4 me-md-2" onclick="planForm();">Create Plan</button>
+
       </div>       
       <div>
        <form action="/logout" method="GET">  
       <input class="btn btn-primary btn-md px-4 me-md-2 logout" type="submit" value="Logout">
     </form>
     </div>
-
   </div>
-      <div id="planContainer">
-
+      <div id="planContainer" class="row">
     </div>
   <script src="./bootstrap-5.0.1-dist/js/bootstrap.bundle.js"></script>
-  <script>
-    function viewPlans() {
-      fetch('/planData')
-      .then(response => response.json())
-      .then(data => {
-        let container = document.getElementById('planContainer');
-        container.innerHTML = '';
-        data.forEach(element=>{
-          console.log(element);
-          let title = document.createTextNode(element.title);
-          let description = document.createTextNode(element.description);
-          let price = document.createTextNode(element.price);
-        let outerDiv = document.createElement('div');
-        let innerDiv = document.createElement('div');
-        let header = document.createElement('h5');
-        let p1 = document.createElement('p');
-        let p2 = document.createElement('p');
-        let uList = document.createElement('ul');
-        outerDiv.classList.add('col-lg');
-        outerDiv.classList.add('card');
-        outerDiv.classList.add('card-body-special');
-        outerDiv.setAttribute('id', 'card');
-        header.classList.add('card-body');
-        p1.classList.add('card-text');
-        p2.classList.add('card-text');
-        header.classList.add('card-title');
-        outerDiv.appendChild(innerDiv);
-        innerDiv.appendChild(header);
-        innerDiv.appendChild(p1);
-        innerDiv.appendChild(p2);
-        header.appendChild(title);
-        p1.appendChild(description);
-        p2.appendChild(price);
-        container.appendChild(outerDiv);
-        })
-      });
-    }
-  </script>
+  <script type="text/javascript" src="/scripts.js"></script>
   </body>
 
 </html>

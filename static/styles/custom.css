@@ -106,3 +106,7 @@
 .logout {
     justify-self: end;
 }
+.centerBox {
+    margin: 0 auto;
+    width: 70%;
+}

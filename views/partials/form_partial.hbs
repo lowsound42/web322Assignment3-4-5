@@ -4,25 +4,17 @@
   Student Number: 132197203
   Email: okhan27@myseneca.ca
   Section NCC
-  Date: 29/6/2021
+  Date: 27/07/2021
   Live demo: https://web322-a2-omar-khan.herokuapp.com/
   github repo: https://github.com/lowsound42/web322a2
   All the work in the project is my own except for stock photos, icons, and bootstrap files included
  -->
+    
 
-<body class="gradient">
-    <div class="container bottom-buffer">
-    <div class="container formHolder top-buffer reg">
-      <h3 class="well bottom-buffer top-padding">Sign in to your Hoster account</h3>
-      <div class="col-lg-12 well">
-        <div class="row">
-          <form action="/login" method="Post">
+ <form action="/login" method="Post">
             <div class="col-sm-12">
               {{#if dbError.loginError}}
               <p class="error">The password you entered was wrong!</p>
-              {{/if}}
-                      {{#if dbError.noUserError}}
-              <p class="error">No user with that email address exists!</p>
               {{/if}}
               <div class="row">
                 <div class="col-lg-12 form-group">
@@ -48,17 +40,3 @@
               <input type="submit" class="btn btn-md btn-info  bottom-buffer" value="Submit" />
             </div>
           </form>
-          <div class="spec-flex">
-            <p>New to Hoster?</p>
-            <form action="/registration">
-              <button type="submit" class="btn btn-sm btn-info" value="Sign Up">Sign Up</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <script src="./bootstrap-5.0.1-dist/js/bootstrap.bundle.js"></script>
-</body>
-
-</html>
