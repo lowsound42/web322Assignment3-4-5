@@ -1,6 +1,9 @@
 let router = require('express').Router();
 var validation = require('../services/validation');
+const upload = require('../services/imageProcessing');
 let User = require('../models/User');
+const path = require('path');
+const fs = require('fs');
 let Plan = require('../models/Plan');
 const bcrypt = require('bcryptjs');
 const saltRounds = 10;
@@ -66,22 +69,34 @@ router.get('/plans', (req, res) => {
         });
 });
 
-router.post('/uploadPlan', (req, res) => {
-    console.log(req.body);
+router.post('/uploadPlan', upload, (req, res) => {
     var newPlan = new Plan({
         title: req.body.title,
         description: req.body.description,
         price: String(req.body.price),
-        items: req.body.items
-    });
-
-    newPlan.save((err) => {
-        if (err) {
-            console.log('Error saving the plan');
-        } else {
-            console.log('Plan saved!');
+        items: req.body.items,
+        img: {
+            data: fs.readFileSync(
+                path.join('./static/photos/' + req.file.filename)
+            ),
+            contentType: 'image/png'
         }
     });
+    if (
+        newPlan.title.length > 0 &&
+        newPlan.description.length > 0 &&
+        newPlan.price.length > 0 &&
+        newPlan.items.length > 0
+    ) {
+        newPlan.save((err) => {
+            if (err) {
+                console.log('Error saving the plan');
+            } else {
+                console.log('Plan saved!');
+            }
+        });
+    } else console.log('enter data pls');
+    res.redirect('/dashboard');
 });
 
 router.get('/login', (req, res) => {

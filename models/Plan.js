@@ -5,7 +5,11 @@ const planSchema = new Schema({
     title: String,
     description: String,
     price: String,
-    items: Array
+    items: Array,
+    img: {
+        data: Buffer,
+        contentType: String
+    }
 });
 
 let Plan = mongoose.model('plan', planSchema);

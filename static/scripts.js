@@ -60,7 +60,11 @@ function planForm() {
     let container = document.getElementById('planContainer');
     container.innerHTML = '';
     let formContainer = document.createElement('form');
+    // formContainer.setAttribute('action', '/uploadPlan');
+    // formContainer.setAttribute('method', 'Post');
     formContainer.setAttribute('onSubmit', 'submitForm(event); return false;');
+    formContainer.setAttribute('enctype', 'multipart/form-data');
+    formContainer.setAttribute('id', 'planForm');
     formContainer.classList.add('centerBox');
     let titleDiv = document.createElement('div');
     let titleDivInner = document.createElement('div');
@@ -70,6 +74,8 @@ function planForm() {
     let priceDivInner = document.createElement('div');
     let itemsDiv = document.createElement('div');
     let itemsDivInner = document.createElement('div');
+    let picDiv = document.createElement('div');
+    let picDivInner = document.createElement('div');
     let titleLabel = document.createElement('label');
     let titleInput = document.createElement('input');
     let descriptionLabel = document.createElement('label');
@@ -78,6 +84,8 @@ function planForm() {
     let priceInput = document.createElement('input');
     let itemsLabel = document.createElement('label');
     let itemsInput = document.createElement('input');
+    let picLabel = document.createElement('label');
+    let picInput = document.createElement('input');
     let submitButton = document.createElement('input');
     submitButton.setAttribute('type', 'submit');
     titleDiv.classList.add('row');
@@ -99,6 +107,15 @@ function planForm() {
     priceDiv.classList.add('row');
     priceDivInner.classList.add('col-lg-12');
     priceDivInner.classList.add('form-group');
+    picDiv.classList.add('row');
+    picDivInner.classList.add('col-lg-12');
+    picDivInner.classList.add('form-group');
+    picLabel.setAttribute('for', 'PlanPicture');
+    picInput.setAttribute('name', 'PlanPicture');
+    picInput.classList.add('form-control');
+    picInput.setAttribute('type', 'file');
+    picLabel.innerHTML = 'Picture';
+    console.log(picDiv);
     priceLabel.setAttribute('for', 'title');
     priceInput.setAttribute('name', 'title');
     priceInput.classList.add('form-control');
@@ -117,10 +134,12 @@ function planForm() {
     formContainer.appendChild(descriptionDiv);
     formContainer.appendChild(priceDiv);
     formContainer.appendChild(itemsDiv);
+    formContainer.appendChild(picDiv);
     titleDiv.appendChild(titleDivInner);
     descriptionDiv.appendChild(descriptionDivInner);
     priceDiv.appendChild(priceDivInner);
     itemsDiv.appendChild(itemsDivInner);
+    picDiv.appendChild(picDivInner);
     titleDivInner.appendChild(titleLabel);
     titleDivInner.appendChild(titleInput);
     descriptionDivInner.appendChild(descriptionLabel);
@@ -130,29 +149,34 @@ function planForm() {
     formContainer.appendChild(submitButton);
     itemsDivInner.appendChild(itemsLabel);
     itemsDivInner.appendChild(itemsInput);
+    picDivInner.appendChild(picLabel);
+    picDivInner.appendChild(picInput);
 }
 
 function submitForm(e) {
-    console.log(e.target.elements[0].value);
+    e.preventDefault();
+    console.log(e.target.elements[4].files[0]);
     let data;
+
     data = {
         title: e.target.elements[0].value,
         description: e.target.elements[1].value,
         price: e.target.elements[2].value,
-        items: [e.target.elements[3].value]
+        items: [e.target.elements[3].value],
+        picture: e.target.elements[4].files[0]
     };
+    var formData = new FormData();
+
+    formData.append('title', e.target.elements[0].value);
+    formData.append('description', e.target.elements[1].value);
+    formData.append('price', e.target.elements[2].value);
+    formData.append('items', e.target.elements[3].value);
+    formData.append('PlanPicture', e.target.elements[4].files[0]);
 
     fetch('/uploadPlan', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+        body: formData
     }).then((response) => console.log(response));
 }
 {
-    /* <div class="row">
-<div class="col-lg-12 form-group">
-  <label for="email">Email Address</label>
-  <input id="email" name="email" type="text" placeholder="Email Address" class="form-control">
-</div>
-</div> */
 }
