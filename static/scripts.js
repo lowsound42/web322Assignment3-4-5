@@ -7,7 +7,7 @@
   Date: 29/06/2021
   Live demo: https://web322-a2-omar-khan.herokuapp.com/
   github repo: https://github.com/lowsound42/web322a2
-  All the work in the project is my own except for stock photos, icons, and bootstrap files included
+  All the work in the project is my own except for stock photos, icons, and bootstrap files included<img src="data:image/jpeg;base64,{binary data}" />
 */
 function viewPlans() {
     fetch('/planData')
@@ -17,6 +17,7 @@ function viewPlans() {
             container.innerHTML = '';
             data.forEach((element) => {
                 console.log(element);
+
                 let title = document.createTextNode(element.title);
                 let description = document.createTextNode(element.description);
                 let price = document.createTextNode(element.price);
@@ -51,6 +52,19 @@ function viewPlans() {
                 p1.appendChild(description);
                 p2.appendChild(price);
                 container.appendChild(outerDiv);
+                if (element.img) {
+                    let img = document.createElement('img');
+                    let mimeType = element.img.contentType;
+                    let binData = element.img.data;
+                    console.log(mimeType);
+                    console.log(binData);
+                    img.setAttribute(
+                        'src',
+                        'data:' + mimeType + ';base64,' + binData
+                    );
+                    console.log(img);
+                    innerDiv.appendChild(img);
+                }
             });
         });
 }
@@ -60,9 +74,7 @@ function planForm() {
     let container = document.getElementById('planContainer');
     container.innerHTML = '';
     let formContainer = document.createElement('form');
-    // formContainer.setAttribute('action', '/uploadPlan');
-    // formContainer.setAttribute('method', 'Post');
-    formContainer.setAttribute('onSubmit', 'submitForm(event); return false;');
+    formContainer.setAttribute('onSubmit', 'submitForm(event);');
     formContainer.setAttribute('enctype', 'multipart/form-data');
     formContainer.setAttribute('id', 'planForm');
     formContainer.classList.add('centerBox');
@@ -72,8 +84,12 @@ function planForm() {
     let descriptionDivInner = document.createElement('div');
     let priceDiv = document.createElement('div');
     let priceDivInner = document.createElement('div');
-    let itemsDiv = document.createElement('div');
-    let itemsDivInner = document.createElement('div');
+    let itemsDiv = document.createElement('ul');
+    let itemsDivInner = document.createElement('li');
+    itemsDiv.classList.add('listRemove');
+    itemsDiv.setAttribute('id', 'items');
+    let addItem = document.createElement('button');
+    addItem.setAttribute('id', 'specButton');
     let picDiv = document.createElement('div');
     let picDivInner = document.createElement('div');
     let titleLabel = document.createElement('label');
@@ -133,13 +149,13 @@ function planForm() {
     formContainer.appendChild(titleDiv);
     formContainer.appendChild(descriptionDiv);
     formContainer.appendChild(priceDiv);
-    formContainer.appendChild(itemsDiv);
     formContainer.appendChild(picDiv);
+    formContainer.appendChild(itemsDiv);
     titleDiv.appendChild(titleDivInner);
     descriptionDiv.appendChild(descriptionDivInner);
     priceDiv.appendChild(priceDivInner);
-    itemsDiv.appendChild(itemsDivInner);
     picDiv.appendChild(picDivInner);
+    itemsDiv.appendChild(itemsDivInner);
     titleDivInner.appendChild(titleLabel);
     titleDivInner.appendChild(titleInput);
     descriptionDivInner.appendChild(descriptionLabel);
@@ -149,34 +165,72 @@ function planForm() {
     formContainer.appendChild(submitButton);
     itemsDivInner.appendChild(itemsLabel);
     itemsDivInner.appendChild(itemsInput);
+    itemsDiv.appendChild(addItem);
+    addItem.innerHTML = 'Add more stuff';
+    addItem.setAttribute('type', 'button');
+    addItem.setAttribute('onclick', 'moreItems();');
+    addItem.classList.add('itemButton');
     picDivInner.appendChild(picLabel);
     picDivInner.appendChild(picInput);
 }
 
+function moreItems() {
+    let itemDiv = document.getElementById('items');
+    let count = itemDiv.getElementsByTagName('li').length;
+    let ref = document.getElementById('specButton');
+    console.log(count);
+    if (count < 5) {
+        let itemsDivInner = document.createElement('li');
+        let itemsLabel = document.createElement('label');
+        let itemsInput = document.createElement('input');
+        itemsLabel.setAttribute('for', 'item');
+        itemsInput.setAttribute('name', 'item');
+        itemsInput.classList.add('form-control');
+        itemsInput.setAttribute('type', 'text');
+        itemsLabel.innerHTML = 'Item';
+        itemDiv.classList.add('row');
+        itemsDivInner.classList.add('col-lg-12');
+        itemsDivInner.classList.add('form-group');
+        itemsDivInner.appendChild(itemsLabel);
+        itemsDivInner.appendChild(itemsInput);
+        itemDiv.insertBefore(itemsDivInner, ref);
+    }
+}
+
 function submitForm(e) {
     e.preventDefault();
-    console.log(e.target.elements[4].files[0]);
     let data;
-
-    data = {
-        title: e.target.elements[0].value,
-        description: e.target.elements[1].value,
-        price: e.target.elements[2].value,
-        items: [e.target.elements[3].value],
-        picture: e.target.elements[4].files[0]
-    };
+    console.log(e.target.elements[5].type);
     var formData = new FormData();
+
+    let itemsArray = [];
+    itemsArray.push(e.target.elements[4].value);
+    if (e.target.elements[5].type === 'text') {
+        itemsArray.push(e.target.elements[5].value);
+    }
+    if (e.target.elements[6].type === 'text') {
+        itemsArray.push(e.target.elements[6].value);
+    }
+    if (e.target.elements[7] && e.target.elements[7].type === 'text') {
+        itemsArray.push(e.target.elements[7].value);
+    }
+    if (e.target.elements[8] && e.target.elements[8].type === 'text') {
+        itemsArray.push(e.target.elements[8].value);
+    }
+    if (e.target.elements[9] && e.target.elements[9].type === 'text') {
+        itemsArray.push(e.target.elements[9].value);
+    }
+
+    console.log(typeof itemsArray);
 
     formData.append('title', e.target.elements[0].value);
     formData.append('description', e.target.elements[1].value);
     formData.append('price', e.target.elements[2].value);
-    formData.append('items', e.target.elements[3].value);
-    formData.append('PlanPicture', e.target.elements[4].files[0]);
+    formData.append('items', JSON.stringify(itemsArray));
+    formData.append('PlanPicture', e.target.elements[3].files[0]);
 
     fetch('/uploadPlan', {
         method: 'POST',
         body: formData
     }).then((response) => console.log(response));
-}
-{
 }

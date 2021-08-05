@@ -9,7 +9,8 @@ const planSchema = new Schema({
     img: {
         data: Buffer,
         contentType: String
-    }
+    },
+    chosenOne: { type: Boolean, unique: true }
 });
 
 let Plan = mongoose.model('plan', planSchema);

@@ -70,17 +70,24 @@ router.get('/plans', (req, res) => {
 });
 
 router.post('/uploadPlan', upload, (req, res) => {
+    let priceStr = String(req.body.price);
+    console.log(req.file.mimetype);
+    let tempArray = [];
+    JSON.parse(req.body.items).forEach((element) => {
+        tempArray.push(element);
+    });
     var newPlan = new Plan({
         title: req.body.title,
         description: req.body.description,
-        price: String(req.body.price),
-        items: req.body.items,
+        price: `C$${priceStr}/mo`,
+        items: tempArray,
         img: {
             data: fs.readFileSync(
                 path.join('./static/photos/' + req.file.filename)
             ),
-            contentType: 'image/png'
-        }
+            contentType: req.file.mimetype
+        },
+        chosenOne: false
     });
     if (
         newPlan.title.length > 0 &&
@@ -97,6 +104,7 @@ router.post('/uploadPlan', upload, (req, res) => {
         });
     } else console.log('enter data pls');
     res.redirect('/dashboard');
+    // res.send('cool');
 });
 
 router.get('/login', (req, res) => {

@@ -110,3 +110,12 @@
     margin: 0 auto;
     width: 70%;
 }
+
+.listRemove {
+    list-style: none;
+    padding-left: 0rem;
+}
+
+.itemButton {
+    height: 2rem;
+}

@@ -15,15 +15,10 @@
     <div class="container holder top-buffer reg flexDash">
     <div>
       <h3 class="well bottom-buffer top-padding">Welcome to the Admin Dashboard, {{data.username}}</h3>
-      {{#if data}}
-        <p>Your account is  <span class="dashboardSpan">ACTIVE</span></p>
-        <p>You have <span class="dashboardSpan">3</span> active web domains</p>
-        <p><span class="dashboardSpan">1</span> of your domains will expire in the next <span class="dashboardSpan">15</span> days</p>
-      {{/if}}
       <button class="btn btn-primary btn-md px-4 me-md-2" onclick="viewPlans();">View Plans</button>
-            <button class="btn btn-primary btn-md px-4 me-md-2" onclick="planForm();">Create Plan</button>
-      </div>       
-      <div>
+      <button class="btn btn-primary btn-md px-4 me-md-2" onclick="planForm();">Create Plan</button>
+     </div>       
+     <div>
        <form action="/logout" method="GET">  
       <input class="btn btn-primary btn-md px-4 me-md-2 logout" type="submit" value="Logout">
     </form>
@@ -34,5 +29,4 @@
   <script src="./bootstrap-5.0.1-dist/js/bootstrap.bundle.js"></script>
   <script type="text/javascript" src="/scripts.js"></script>
   </body>
-
 </html>
