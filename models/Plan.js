@@ -10,7 +10,7 @@ const planSchema = new Schema({
         data: Buffer,
         contentType: String
     },
-    chosenOne: { type: Boolean, unique: true }
+    chosenOne: Boolean
 });
 
 let Plan = mongoose.model('plan', planSchema);

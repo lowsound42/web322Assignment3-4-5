@@ -41,6 +41,9 @@
 
 .card-body-special {
     margin: 0rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .reg {
@@ -118,4 +121,8 @@
 
 .itemButton {
     height: 2rem;
+}
+
+.planImage {
+    width: 10rem;
 }

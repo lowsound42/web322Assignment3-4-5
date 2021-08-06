@@ -21,6 +21,8 @@ require('dotenv').config();
 const db = process.env.mongoCreds;
 
 var mongoose = require('mongoose');
+mongoose.set('useFindAndModify', false);
+
 var Schema = mongoose.Schema;
 app.use(express.static('static'));
 app.use(bodyParser.urlencoded({ extended: false }));

@@ -13,7 +13,7 @@ router.use(
     clientSessions({
         cookieName: 'session', // this is the object name that will be added to 'req'
         secret: 'hosterShmoster6524', // this should be a long un-guessable string.
-        duration: 5 * 60 * 1000, // duration of the session in milliseconds (2 minutes)
+        duration: 60 * 60 * 1000, // duration of the session in milliseconds (5 minutes)
         activeDuration: 2 * 1000 * 60 // the session will be extended by this many ms each request (1 minute)
     })
 );
@@ -51,7 +51,46 @@ router.get('/planData', (req, res) => {
         });
 });
 
+router.delete('/plans/:id', (req, res) => {
+    console.log(req.params.id.substr(1));
+    Plan.deleteOne({ _id: req.params.id.substr(1) }, function (err) {
+        if (err) {
+            return handleError(err);
+        } else {
+            console.log('deleted!');
+        }
+    });
+});
+
+router.patch('/plans/:id', (req, res) => {
+    const filter = { _id: req.params.id.substr(1) };
+    console.log('filter:', filter);
+    const update = { chosenOne: true };
+    console.log(req.params);
+    Plan.updateOne(
+        { chosenOne: true },
+        { $set: { chosenOne: false } },
+        function (err, result) {
+            if (err) {
+                console.log(err);
+            } else {
+                Plan.updateOne(
+                    { _id: req.params.id.substr(1) },
+                    { chosenOne: true }
+                )
+                    .lean()
+                    .exec()
+                    .then((response) => {
+                        console.log(response);
+                        res.send(response);
+                    });
+            }
+        }
+    );
+});
+
 router.get('/plans', (req, res) => {
+    console.log(req.params);
     let sesh = { sesh: false };
     if (req.session.email) {
         sesh.sesh = true;

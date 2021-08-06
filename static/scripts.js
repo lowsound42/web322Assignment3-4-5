@@ -9,6 +9,7 @@
   github repo: https://github.com/lowsound42/web322a2
   All the work in the project is my own except for stock photos, icons, and bootstrap files included<img src="data:image/jpeg;base64,{binary data}" />
 */
+
 function viewPlans() {
     fetch('/planData')
         .then((response) => response.json())
@@ -36,11 +37,33 @@ function viewPlans() {
                 p1.classList.add('card-text');
                 p2.classList.add('card-text');
                 header.classList.add('card-title');
+                header.setAttribute('id', 'planTitle');
                 outerDiv.appendChild(innerDiv);
+                if (element.img) {
+                    let img = document.createElement('img');
+                    let mimeType = element.img.contentType;
+                    let binData = element.img.data;
+                    img.setAttribute(
+                        'src',
+                        'data:' + mimeType + ';base64,' + binData
+                    );
+                    img.classList.add('planImage');
+                    innerDiv.appendChild(img);
+                }
+                let deleteButton = document.createElement('button');
+                deleteButton.setAttribute('onclick', 'deletePlan(event);');
+                deleteButton.setAttribute('value', element._id);
+                deleteButton.innerHTML = 'Delete Plan';
+                let popButton = document.createElement('button');
+                popButton.setAttribute('onclick', 'makePopular(event);');
+                popButton.setAttribute('value', element._id);
+                popButton.innerHTML = 'Make Popular';
                 innerDiv.appendChild(header);
                 innerDiv.appendChild(p1);
                 innerDiv.appendChild(p2);
                 innerDiv.appendChild(uList);
+                innerDiv.appendChild(deleteButton);
+                innerDiv.appendChild(popButton);
                 element.items.forEach((item) => {
                     let listItem = document.createElement('li');
                     listItem.classList.add('list-group-item');
@@ -51,22 +74,30 @@ function viewPlans() {
                 header.appendChild(title);
                 p1.appendChild(description);
                 p2.appendChild(price);
+
                 container.appendChild(outerDiv);
-                if (element.img) {
-                    let img = document.createElement('img');
-                    let mimeType = element.img.contentType;
-                    let binData = element.img.data;
-                    console.log(mimeType);
-                    console.log(binData);
-                    img.setAttribute(
-                        'src',
-                        'data:' + mimeType + ';base64,' + binData
-                    );
-                    console.log(img);
-                    innerDiv.appendChild(img);
-                }
             });
         });
+}
+
+function makePopular(e) {
+    console.log('popular');
+    fetch('/plans/:' + e.target.value, {
+        method: 'PATCH'
+    })
+        .then((response) => response.json())
+        .then((data) => console.log(data));
+}
+
+function deletePlan(e) {
+    console.log(e.target);
+    fetch('/plans/:' + e.target.value, {
+        method: 'DELETE'
+    }).then((response) => console.log(response));
+    setTimeout(() => {
+        viewPlans();
+        console.log('here');
+    }, 500);
 }
 
 function planForm() {
@@ -131,7 +162,6 @@ function planForm() {
     picInput.classList.add('form-control');
     picInput.setAttribute('type', 'file');
     picLabel.innerHTML = 'Picture';
-    console.log(picDiv);
     priceLabel.setAttribute('for', 'title');
     priceInput.setAttribute('name', 'title');
     priceInput.classList.add('form-control');
@@ -178,7 +208,6 @@ function moreItems() {
     let itemDiv = document.getElementById('items');
     let count = itemDiv.getElementsByTagName('li').length;
     let ref = document.getElementById('specButton');
-    console.log(count);
     if (count < 5) {
         let itemsDivInner = document.createElement('li');
         let itemsLabel = document.createElement('label');
@@ -200,7 +229,6 @@ function moreItems() {
 function submitForm(e) {
     e.preventDefault();
     let data;
-    console.log(e.target.elements[5].type);
     var formData = new FormData();
 
     let itemsArray = [];
@@ -221,8 +249,6 @@ function submitForm(e) {
         itemsArray.push(e.target.elements[9].value);
     }
 
-    console.log(typeof itemsArray);
-
     formData.append('title', e.target.elements[0].value);
     formData.append('description', e.target.elements[1].value);
     formData.append('price', e.target.elements[2].value);
@@ -233,4 +259,7 @@ function submitForm(e) {
         method: 'POST',
         body: formData
     }).then((response) => console.log(response));
+    setTimeout(() => {
+        viewPlans();
+    }, 1000);
 }
