@@ -126,3 +126,8 @@
 .planImage {
     width: 10rem;
 }
+
+.popular {
+    font-weight: bold;
+    color: red;
+}

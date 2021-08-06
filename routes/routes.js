@@ -108,6 +108,52 @@ router.get('/plans', (req, res) => {
         });
 });
 
+router.post('/editPlan', upload, (req, res) => {
+    let priceStr = String(req.body.price);
+    console.log(req.body);
+    let tempArray = [];
+    JSON.parse(req.body.items).forEach((element) => {
+        tempArray.push(element);
+    });
+    var newPlan = new Plan({
+        title: req.body.title,
+        description: req.body.description,
+        price: `C$${priceStr}/mo`,
+        items: tempArray,
+        img: {
+            data: fs.readFileSync(
+                path.join('./static/photos/' + req.file.filename)
+            ),
+            contentType: req.file.mimetype
+        },
+        chosenOne: false
+    });
+    if (
+        newPlan.title.length > 0 &&
+        newPlan.description.length > 0 &&
+        newPlan.price.length > 0 &&
+        newPlan.items.length > 0
+    ) {
+        Plan.deleteOne({ _id: req.body._id })
+            .lean()
+            .exec()
+            .then((response) => {
+                console.log(response);
+                newPlan.save((err) => {
+                    if (err) {
+                        console.log('Error saving the plan');
+                    } else {
+                        console.log('Plan saved!');
+                    }
+                });
+            });
+    } else {
+        console.log('no data');
+    }
+    res.redirect('/dashboard');
+    // res.send('cool');
+});
+
 router.post('/uploadPlan', upload, (req, res) => {
     let priceStr = String(req.body.price);
     console.log(req.file.mimetype);

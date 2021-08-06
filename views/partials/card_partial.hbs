@@ -14,6 +14,9 @@
       {{#each data}}
       <div class=" col-lg card card-body-special" id="card">
         <div class="card-body">
+          {{#if this.chosenOne}}
+          <p class="popular">Our most POPULAR plan</p>
+          {{/if}}
           <h5 class="card-title">{{this.title}}</h5>
           <p class="card-text">{{this.description}}</p>
           <p class="card-text">{{this.price}}</p>
