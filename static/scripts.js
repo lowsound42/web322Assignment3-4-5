@@ -64,6 +64,7 @@ function getMonths(input) {
 }
 
 function finalCheckout(data) {
+    console.log(data);
     fetch('/finalCheckout', {
         method: 'POST',
         headers: {
@@ -72,6 +73,44 @@ function finalCheckout(data) {
         },
         body: JSON.stringify({ data: data })
     }).then((response) => console.log(response));
+}
+
+function populateDashboard() {
+    console.log('test');
+    let apiCheck = document.getElementById('userDash');
+    if (apiCheck) {
+        fetch('/orders')
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data.orders.length);
+                if (data.orders.length > 0) {
+                    let orderContainer =
+                        document.getElementById('orderContainer');
+                    let orderHolder = document.createElement('div');
+                    orderHolder.classList.add('col-lg');
+                    orderHolder.classList.add('card');
+                    orderHolder.classList.add('col-body-special');
+                    orderContainer.appendChild(orderHolder);
+                    data.orders.forEach((element) => {
+                        console.log(element);
+                        let cardHolder = document.createElement('div');
+                        let cardTitle = document.createElement('h5');
+                        let cardTextOne = document.createElement('p');
+                        cardHolder.classList.add('card-body');
+                        cardTitle.classList.add('card-title');
+                        cardTextOne.classList.add('card-text');
+                        cardTitle.innerHTML = element.title;
+                        cardTextOne.innerHTML = `${element.months} month plan at ${element.price}`;
+                        cardHolder.appendChild(cardTitle);
+                        cardHolder.appendChild(cardTextOne);
+                        orderHolder.appendChild(cardHolder);
+                    });
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
 }
 
 function checkOut(event) {
@@ -85,6 +124,7 @@ function checkOut(event) {
     })
         .then((response) => response.json())
         .then((data) => {
+            let tempData = data;
             let sumPlan = document.getElementById('summaryPlan');
             let sumPromo = document.getElementById('summaryPromo');
             let sumFinal = document.getElementById('summaryTotal');
@@ -92,6 +132,9 @@ function checkOut(event) {
                 let sumTotal =
                     ((getPrice(data.price) * 100) / 57) *
                     getMonths(event.parentElement.children[0].innerHTML);
+                tempData.months = getMonths(
+                    event.parentElement.children[0].innerHTML
+                );
                 sumPlan.innerHTML = data.title + ' ' + sumTotal.toFixed(2);
                 sumPlan.style.textAlign = 'center';
                 if (sumPromo) {
@@ -99,13 +142,14 @@ function checkOut(event) {
                         sumTotal * 0.35
                     ).toFixed(2)}`;
                     let finalTotal = (sumTotal - sumTotal * 0.35).toFixed(2);
+                    tempData.finalPrice = finalTotal;
                     sumFinal.innerHTML = `TOTAL: ${finalTotal}`;
                 }
                 let sumButton = document.getElementById('summaryButton');
                 sumButton.innerHTML = '';
                 let sumSubmitButton = document.createElement('button');
                 sumSubmitButton.addEventListener('click', function () {
-                    finalCheckout(data);
+                    finalCheckout(tempData);
                 });
                 sumSubmitButton.innerHTML = 'Checkout';
                 sumButton.appendChild(sumSubmitButton);
@@ -134,6 +178,7 @@ window.onload = function () {
     getName();
     getSelection();
     setSummary();
+    populateDashboard();
 };
 
 function viewPlans() {

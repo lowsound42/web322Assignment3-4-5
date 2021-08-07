@@ -47,9 +47,17 @@ router.post('/finalCheckout', (req, res) => {
     res.json({ success: true });
 });
 
+router.get('/orders', (req, res) => {
+    User.findOne({ _id: req.session.id })
+        .lean()
+        .exec()
+        .then((response) => {
+            res.json(response);
+        });
+});
+
 router.get('/', (req, res) => {
     let userSesh = false;
-
     if (!req.session.admin) {
         userSesh = true;
     }

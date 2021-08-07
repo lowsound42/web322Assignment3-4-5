@@ -13,11 +13,15 @@
 <body>
   <div class="container bottom-buffer">
     <div class="container holder top-buffer reg">
-      <h3 class="well bottom-buffer top-padding">Welcome to your Hoster dashboard, {{firstName}}</h3>
+      <h3 class="well bottom-buffer top-padding" id="userDash">Welcome to your Hoster dashboard, {{firstName}}</h3>
       <p>Are you ready to checkout with your purchase? <a href="/cart">Click here</a> to get to your cart.</p>
+    </div>
+    <div id="orderContainer" class="row">
+    
     </div>
   </div>
   <script src="./bootstrap-5.0.1-dist/js/bootstrap.bundle.js"></script>
+    <script type="module" src='./scripts.js'>  </script>
 </body>
 
 </html>
