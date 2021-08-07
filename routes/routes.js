@@ -87,6 +87,7 @@ router.get('/cart', (req, res) => {
                         res.render('cart', {
                             page: page,
                             cart: tempCart,
+                            tempCart: tempCart,
                             layout: 'mainLogged',
                             customer: req.session.customer
                         });
