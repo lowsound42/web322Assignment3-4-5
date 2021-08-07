@@ -32,11 +32,8 @@ function ensureLogin(req, res, next) {
 }
 
 router.get('/', (req, res) => {
-    let sesh = { sesh: false };
     let userSesh = false;
-    if (req.session.email) {
-        sesh.sesh = true;
-    }
+
     if (!req.session.admin) {
         userSesh = true;
     }
@@ -44,7 +41,6 @@ router.get('/', (req, res) => {
     res.render('index', {
         page: page,
         customer: req.session.customer,
-        sesh: sesh,
         cart: userSesh,
         layout: req.session.email ? 'mainLogged' : 'main'
     });
@@ -90,7 +86,6 @@ router.get('/cart', (req, res) => {
                     .then((result) => {
                         res.render('cart', {
                             page: page,
-                            sesh: sesh,
                             cart: tempCart,
                             layout: 'mainLogged',
                             customer: req.session.customer
@@ -409,7 +404,6 @@ router.get('/dashboard', ensureLogin, (req, res) => {
             email: req.session.email,
             page: req.session.page,
             layout: req.session.layout,
-            sesh: req.session.sesh,
             cart: req.session.cart,
             customer: req.session.customer
         });
@@ -421,7 +415,6 @@ router.get('/dashboard', ensureLogin, (req, res) => {
             email: req.session.email,
             page: req.session.page,
             layout: req.session.layout,
-            sesh: req.session.sesh,
             cart: req.session.cart,
             customer: req.session.customer
         });
@@ -480,7 +473,6 @@ router.post('/registration', (req, res) => {
                         page: { dashboard: true },
                         layout: 'mainLogged',
                         origin: 2,
-                        sesh: { sesh: true },
                         email: formData.emailadd
                     };
                     console.log('User saved!');
