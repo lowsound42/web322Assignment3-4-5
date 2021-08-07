@@ -45,19 +45,49 @@ router.get('/', (req, res) => {
     });
 });
 
+function getPrice(input) {
+    console.log(input, 'test');
+    let removeExtras = input.slice(2).slice(0, -3);
+    return parseFloat(removeExtras);
+}
+
 router.get('/cart', (req, res) => {
     let sesh = { sesh: false };
     if (req.session.email) {
         sesh.sesh = true;
     }
     const page = { cart: true };
-    res.render('cart', {
-        page: page,
-        sesh: sesh,
-        cart: req.session.cart,
-        data: req.session.data,
-        layout: 'mainLogged'
-    });
+    let tempCart = req.session.cart;
+    User.findOne({ _id: req.session.data._id })
+        .lean()
+        .exec()
+        .then((response) => {
+            Plan.findOne({ _id: mongoose.Types.ObjectId(response.cart) })
+                .lean()
+                .exec()
+                .then((response) => {
+                    let priceBase = (getPrice(response.price) * 100) / 57;
+                    tempCart = {
+                        plan: response,
+                        price: (priceBase - (43 / 100) * priceBase).toFixed(2),
+                        one: priceBase.toFixed(2),
+                        twelve: (priceBase - (37 / 100) * priceBase).toFixed(2),
+                        twentyFour: (
+                            priceBase -
+                            (40 / 100) * priceBase
+                        ).toFixed(2)
+                    };
+                })
+                .then((result) => {
+                    res.render('cart', {
+                        page: page,
+                        sesh: sesh,
+                        cart: tempCart,
+                        data: req.session.data,
+                        layout: 'mainLogged'
+                    });
+                });
+        });
 });
 
 router.post('/addToCart', (req, res) => {

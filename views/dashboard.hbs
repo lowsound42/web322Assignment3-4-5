@@ -14,14 +14,7 @@
   <div class="container bottom-buffer">
     <div class="container holder top-buffer reg">
       <h3 class="well bottom-buffer top-padding">Welcome to your Hoster dashboard, {{data.username}}</h3>
-      {{#if data.login}}
-        <p>Your account is  <span class="dashboardSpan">ACTIVE</span></p>
-        <p>You have <span class="dashboardSpan">3</span> active web domains</p>
-        <p><span class="dashboardSpan">1</span> of your domains will expire in the next <span class="dashboardSpan">15</span> days</p>
-      {{/if}}
-      {{#if data.registration}}
-        <p>You can start by purchasing a new domain!</p>
-      {{/if}}
+      <p>Are you ready to checkout with your purchase? <a href="/cart">Click here</a> to get to your cart.</p>
     </div>
   </div>
   <script src="./bootstrap-5.0.1-dist/js/bootstrap.bundle.js"></script>

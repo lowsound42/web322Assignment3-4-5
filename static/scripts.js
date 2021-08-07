@@ -15,7 +15,13 @@ function getName() {
         .then((response) => response.json())
         .then((data) => {
             let holder = document.getElementById('planHolder');
-            if (holder) holder.innerHTML = data.title;
+            if (holder) holder.innerHTML = `Web hosting plan: ${data.title}`;
+        })
+        .catch((err) => {
+            let holder = document.getElementById('planHolder');
+            if (holder)
+                holder.innerHTML =
+                    "Select a plan to purchase from the 'Plans' page.";
         });
 }
 

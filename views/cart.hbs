@@ -14,13 +14,40 @@
   <div class="container bottom-buffer">
     <div class="container holder top-buffer reg flexDash">
     <div>
-      <h3 class="well bottom-buffer top-padding">Are you ready to purchase the&nbsp;<span id="planHolder"></span> plan?</h3>
+      
+      <h3 class="well bottom-buffer top-padding" id="planHolder"></h3>
      </div>       
      <div>
     </div>
   </div>
-      <div id="planContainer" class="row">
+  {{#if cart}}
+      <div id="planDetails" class="row">
+        <div class="col-lg card card-body-special">
+          <div class="card-body"></div>
+           <h5 class="card-title">1 Month</h5>
+          <p class="card-text">{{this.cart.one}}</p>
+          <p class="card-text"></p>
+        </div>
+        <div class="col-lg card card-body-special">
+          <div class="card-body"></div>
+           <h5 class="card-title">12 Months</h5>
+          <p class="card-text">{{this.cart.twelve}}</p>
+          <p class="card-text"></p>
+        </div>
+        <div class="col-lg card card-body-special">
+          <div class="card-body"></div>
+           <h5 class="card-title">24 Months</h5>
+          <p class="card-text">{{this.cart.twentyFour}}</p>
+          <p class="card-text"></p>
+        </div>
+        <div class="col-lg card card-body-special">
+          <div class="card-body"></div>
+           <h5 class="card-title">36 Months</h5>
+          <p class="card-text">{{this.cart.price}}</p>
+          <p class="card-text"></p>
+        </div>
     </div>
+    {{/if}}
   <script src="./bootstrap-5.0.1-dist/js/bootstrap.bundle.js"></script>
   <script type="text/javascript" src="/scripts.js"></script>
   </body>
