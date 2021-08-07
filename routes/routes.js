@@ -31,6 +31,19 @@ function ensureLogin(req, res, next) {
         });
 }
 
+router.get('/', (req, res) => {
+    let sesh = { sesh: false };
+    if (req.session.email) {
+        sesh.sesh = true;
+    }
+    const page = { home: true };
+    res.render('index', {
+        page: page,
+        sesh: sesh,
+        layout: req.session.email ? 'mainLogged' : 'main'
+    });
+});
+
 router.get('/cart', (req, res) => {
     let sesh = { sesh: false };
     if (req.session.email) {
@@ -59,20 +72,6 @@ router.post('/addToCart', (req, res) => {
         }
     );
     res.json(req.session.cart);
-});
-
-router.get('/', (req, res) => {
-    console.log(req.session);
-    let sesh = { sesh: false };
-    if (req.session.email) {
-        sesh.sesh = true;
-    }
-    const page = { home: true };
-    res.render('index', {
-        page: page,
-        sesh: sesh,
-        layout: req.session.email ? 'mainLogged' : false
-    });
 });
 
 router.get('/planData', (req, res) => {
@@ -208,15 +207,17 @@ router.post('/editPlan', upload, (req, res) => {
 
 router.get('/userDetails', (req, res) => {
     console.log(req.session.data._id);
-    User.findOne({ _id: req.session.data._id })
-        .lean()
-        .exec()
-        .then((response) => {
-            Plan.findOne({ _id: mongoose.Types.ObjectId(response.cart) })
-                .lean()
-                .exec()
-                .then((response) => res.send(response));
-        });
+    if (!req.session.admin) {
+        User.findOne({ _id: req.session.data._id })
+            .lean()
+            .exec()
+            .then((response) => {
+                Plan.findOne({ _id: mongoose.Types.ObjectId(response.cart) })
+                    .lean()
+                    .exec()
+                    .then((response) => res.send(response));
+            });
+    }
 });
 
 router.post('/uploadPlan', upload, (req, res) => {
