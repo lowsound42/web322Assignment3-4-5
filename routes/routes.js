@@ -302,6 +302,10 @@ router.post('/login', (req, res) => {
                         formData.password,
                         user.password,
                         function (err, response) {
+                            let userCart = false;
+                            if (user.cart) {
+                                userCart = user.cart;
+                            }
                             if (response) {
                                 req.session = {
                                     admin: user.admin,
@@ -310,7 +314,7 @@ router.post('/login', (req, res) => {
                                     layout: 'mainLogged',
                                     email: formData.email,
                                     origin: 1,
-                                    cart: user.cart.length > 0 ? 1 : 0,
+                                    cart: userCart,
                                     sesh: { sesh: true }
                                 };
                                 res.redirect('/dashboard');
@@ -396,7 +400,8 @@ router.post('/registration', (req, res) => {
                 addresstwo: formData.addresstwo,
                 province: formData.province,
                 company: formData.company,
-                admin: false
+                admin: false,
+                cart: ''
             });
             userInfo.save((err) => {
                 if (err) {
@@ -409,7 +414,6 @@ router.post('/registration', (req, res) => {
                 } else {
                     req.session = {
                         data: formData,
-                        cart: user.cart.length > 0 ? 1 : 0,
                         page: { dashboard: true },
                         layout: 'mainLogged',
                         origin: 2,
