@@ -10,6 +10,42 @@
   All the work in the project is my own except for stock photos, icons, and bootstrap files included<img src="data:image/jpeg;base64,{binary data}" />
 */
 
+function getName() {
+    fetch('/userDetails')
+        .then((response) => response.json())
+        .then((data) => {
+            let holder = document.getElementById('planHolder');
+            if (holder) holder.innerHTML = data.title;
+        });
+}
+
+function addToCart(id) {
+    fetch('/addToCart', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id: id })
+    }).then((response) => console.log(response));
+    // setTimeout(() => {
+    //     viewPlans();
+    // }, 2000);
+}
+
+function checkForm() {
+    document.querySelectorAll('.purchaseButton').forEach((element) =>
+        element.addEventListener('click', (event) => {
+            addToCart(event.target.value);
+        })
+    );
+}
+
+window.onload = function () {
+    checkForm();
+    getName();
+};
+
 function viewPlans() {
     fetch('/planData')
         .then((response) => response.json())

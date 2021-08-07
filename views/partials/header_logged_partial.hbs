@@ -16,7 +16,6 @@
           aria-controls="navbarTogglerDemo02"aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-
         <div class="collapse navbar-collapse justify-content-end" id="navbarTogglerDemo02">
           <ul class="navbar-nav">
             <li class="nav-item">
@@ -27,6 +26,14 @@
             </li>
             <li class="nav-item">
               <a class="nav-link {{#if page.dashboard}} active{{/if}}"  {{#if page.dashboard}} aria-current="page" {{/if}} href="/dashboard">Dashboard</a>
+            </li>
+            <li>
+                <a class="nav-link {{#if page.cart}} active{{/if}}"  {{#if page.cart}} aria-current="page" {{/if}} href="/cart">Cart</a>
+            </li>
+            <li>       
+              <form action="/logout" method="GET">  
+                <input class="btn btn-primary btn-md px-4 me-md-2 logout" type="submit" value="Logout">
+              </form>
             </li>
           </ul>
         </div>

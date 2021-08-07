@@ -1,0 +1,31 @@
+<!-- 
+  WEB322 Assignment 2
+  Name: Omar Khan
+  Student Number: 132197203
+  Email: okhan27@myseneca.ca
+  Section NCC
+  Date: 29/6/2021
+  Live demo: https://web322-a2-omar-khan.herokuapp.com/
+  github repo: https://github.com/lowsound42/web322a2
+  All the work in the project is my own except for stock photos, icons, and bootstrap files included
+ -->
+   
+   <div class="row">
+      {{#each data}}
+      <div class=" col-lg card card-body-special" id="card">
+        <div class="card-body">
+          {{#if this.chosenOne}}
+          <p class="popular">Our most POPULAR plan</p>
+          {{/if}}
+          <h5 class="card-title">{{this.title}}</h5>
+          <p class="card-text">{{this.description}}</p>
+          <p class="card-text">{{this.price}}</p>
+          <ul class="list-group ">
+            {{#each this.items}}
+            <li class="list-group-item">{{this}}</li>
+            {{/each}}
+          </ul>
+        </div>
+      </div>
+      {{/each}}
+    </div>

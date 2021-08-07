@@ -8,6 +8,7 @@ let Plan = require('../models/Plan');
 const bcrypt = require('bcryptjs');
 const saltRounds = 10;
 const clientSessions = require('client-sessions');
+var mongoose = require('mongoose');
 
 router.use(
     clientSessions({
@@ -30,7 +31,38 @@ function ensureLogin(req, res, next) {
         });
 }
 
+router.get('/cart', (req, res) => {
+    let sesh = { sesh: false };
+    if (req.session.email) {
+        sesh.sesh = true;
+    }
+    const page = { cart: true };
+    res.render('cart', {
+        page: page,
+        sesh: sesh,
+        data: req.session.data,
+        layout: 'mainLogged'
+    });
+});
+
+router.post('/addToCart', (req, res) => {
+    console.log(req.body.id);
+    User.updateOne(
+        { email: req.session.email },
+        { $set: { cart: req.body.id } },
+        function (err, result) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log('Cart updated!');
+            }
+        }
+    );
+    res.json(req.session.cart);
+});
+
 router.get('/', (req, res) => {
+    console.log(req.session);
     let sesh = { sesh: false };
     if (req.session.email) {
         sesh.sesh = true;
@@ -38,7 +70,8 @@ router.get('/', (req, res) => {
     const page = { home: true };
     res.render('index', {
         page: page,
-        sesh: sesh
+        sesh: sesh,
+        layout: req.session.email ? 'mainLogged' : false
     });
 });
 
@@ -90,21 +123,41 @@ router.patch('/plans/:id', (req, res) => {
 });
 
 router.get('/plans', (req, res) => {
-    console.log(req.params);
     let sesh = { sesh: false };
+    let adminSesh = { adminSesh: false };
+    let noUser = { noUser: true };
+    console.log(req.session.admin);
     if (req.session.email) {
-        sesh.sesh = true;
+        if (req.session.admin) {
+            adminSesh.adminSesh = true;
+            noUser.noUser = false;
+        } else {
+            sesh.sesh = true;
+            noUser.noUser = false;
+        }
     }
     Plan.find()
         .lean()
         .exec()
         .then((response) => {
             const page = { plan: true };
-            res.render('plans', {
-                data: response,
-                page: page,
-                sesh: sesh
-            });
+            if (req.session.email) {
+                res.render('plans', {
+                    layout: 'mainLogged',
+                    data: response,
+                    page: page,
+                    sesh: sesh,
+                    adminSesh: adminSesh,
+                    noUser: noUser
+                });
+            } else {
+                res.render('plans', {
+                    data: response,
+                    page: page,
+                    sesh: sesh,
+                    noUser: noUser
+                });
+            }
         });
 });
 
@@ -151,7 +204,19 @@ router.post('/editPlan', upload, (req, res) => {
         console.log('no data');
     }
     res.redirect('/dashboard');
-    // res.send('cool');
+});
+
+router.get('/userDetails', (req, res) => {
+    console.log(req.session.data._id);
+    User.findOne({ _id: req.session.data._id })
+        .lean()
+        .exec()
+        .then((response) => {
+            Plan.findOne({ _id: mongoose.Types.ObjectId(response.cart) })
+                .lean()
+                .exec()
+                .then((response) => res.send(response));
+        });
 });
 
 router.post('/uploadPlan', upload, (req, res) => {
@@ -194,7 +259,6 @@ router.post('/uploadPlan', upload, (req, res) => {
 
 router.get('/login', (req, res) => {
     if (req.session.email) {
-        console.log('test');
         res.redirect('/dashboard');
     }
     const page = { login: true };
@@ -225,7 +289,6 @@ router.post('/login', (req, res) => {
         formData.pError === false &&
         formData.emailError === false
     ) {
-        console.log(formData);
         const sesh = req.session;
         User.findOne({ email: formData.email })
             .exec()
@@ -243,11 +306,9 @@ router.post('/login', (req, res) => {
                                     layout: 'mainLogged',
                                     email: formData.email,
                                     origin: 1,
+                                    cart: 0,
                                     sesh: { sesh: true }
                                 };
-                                console.log('__________________________');
-                                console.log(user);
-                                console.log('__________________________');
                                 res.redirect('/dashboard');
                             } else {
                                 res.render('login', {
@@ -280,7 +341,6 @@ router.post('/login', (req, res) => {
 
 router.get('/dashboard', ensureLogin, (req, res) => {
     if (req.session.admin) {
-        console.log(req.session.layout);
         res.render('adminDashboard', {
             email: req.session.email,
             data: req.session.data,
@@ -301,7 +361,6 @@ router.get('/dashboard', ensureLogin, (req, res) => {
 
 router.post('/registration', (req, res) => {
     let formData = validation.regValidation(req.body);
-    console.log(formData);
     const sesh = req.session;
 
     if (
@@ -343,6 +402,7 @@ router.post('/registration', (req, res) => {
                 } else {
                     req.session = {
                         data: formData,
+                        cart: 0,
                         page: { dashboard: true },
                         layout: 'mainLogged',
                         origin: 2,

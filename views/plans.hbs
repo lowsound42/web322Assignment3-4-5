@@ -40,7 +40,15 @@
     </div>
   </div>
   <div class="container bottom-buffer">
-  {{>card_partial parameter=data}}
+    {{#if adminSesh.adminSesh}}
+      {{>card_partial_admin parameterOne=data}}
+    {{/if}}
+    {{#if sesh.sesh}}
+      {{>card_partial_logged parameterOne=data}}
+    {{/if}}
+    {{#if noUser.noUser}}
+      {{>card_partial parameterOne=data}}
+    {{/if}}
   </div>
   <script src="./bootstrap-5.0.1-dist/js/bootstrap.bundle.js"></script>
   <script type="module" src='./scripts.js'>  </script>

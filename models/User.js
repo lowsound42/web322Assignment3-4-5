@@ -13,7 +13,8 @@ const userSchema = new Schema({
     addresstwo: { type: String, default: 'N/A' },
     province: String,
     company: { type: String, default: 'N/A' },
-    admin: Boolean
+    admin: Boolean,
+    cart: String
 });
 
 let User = mongoose.model('user', userSchema);
