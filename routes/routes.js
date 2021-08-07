@@ -31,6 +31,22 @@ function ensureLogin(req, res, next) {
         });
 }
 
+router.post('/finalCheckout', (req, res) => {
+    console.log(req.body);
+    User.updateOne(
+        { _id: req.session.id },
+        { $push: { orders: req.body.data } },
+        function (err, result) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log('Orders updated!');
+            }
+        }
+    );
+    res.json({ success: true });
+});
+
 router.get('/', (req, res) => {
     let userSesh = false;
 
@@ -52,55 +68,75 @@ function getPrice(input) {
     return parseFloat(removeExtras);
 }
 
-router.get('/cart', (req, res) => {
-    const page = { cart: true };
-    let tempCart = req.session.cart;
-    User.findOne({ _id: req.session.id })
+router.post('/plan', (req, res) => {
+    Plan.findOne({
+        _id: mongoose.Types.ObjectId(req.body.id)
+    })
         .lean()
         .exec()
         .then((response) => {
-            if (response.cart.planId !== null) {
-                Plan.findOne({
-                    _id: mongoose.Types.ObjectId(response.cart.planId)
-                })
-                    .lean()
-                    .exec()
-                    .then((response) => {
-                        let priceBase = (getPrice(response.price) * 100) / 57;
-                        tempCart = {
-                            plan: response,
-                            price: (priceBase - (43 / 100) * priceBase).toFixed(
-                                2
-                            ),
-                            one: priceBase.toFixed(2),
-                            twelve: (
-                                priceBase -
-                                (37 / 100) * priceBase
-                            ).toFixed(2),
-                            twentyFour: (
-                                priceBase -
-                                (40 / 100) * priceBase
-                            ).toFixed(2)
-                        };
-                    })
-                    .then((result) => {
-                        res.render('cart', {
-                            page: page,
-                            cart: tempCart,
-                            tempCart: tempCart,
-                            layout: 'mainLogged',
-                            customer: req.session.customer
-                        });
-                    });
-            } else {
-                res.render('cart', {
-                    page: page,
-                    cart: true,
-                    layout: 'mainLogged',
-                    customer: req.session.customer
-                });
-            }
+            console.log(response);
+            res.json(response);
         });
+});
+
+router.get('/cart', (req, res) => {
+    const page = { cart: true };
+    if (req.session.email) {
+        let tempCart = req.session.cart;
+        User.findOne({ _id: req.session.id })
+            .lean()
+            .exec()
+            .then((response) => {
+                if (response.cart.planId !== null) {
+                    Plan.findOne({
+                        _id: mongoose.Types.ObjectId(response.cart.planId)
+                    })
+                        .lean()
+                        .exec()
+                        .then((response) => {
+                            console.log(response);
+                            let priceBase =
+                                (getPrice(response.price) * 100) / 57;
+                            tempCart = {
+                                plan: response,
+                                price: (
+                                    priceBase -
+                                    (43 / 100) * priceBase
+                                ).toFixed(2),
+                                one: priceBase.toFixed(2),
+                                twelve: (
+                                    priceBase -
+                                    (37 / 100) * priceBase
+                                ).toFixed(2),
+                                twentyFour: (
+                                    priceBase -
+                                    (40 / 100) * priceBase
+                                ).toFixed(2)
+                            };
+                        })
+                        .then((result) => {
+                            res.render('cart', {
+                                page: page,
+                                cart: tempCart,
+                                tempCart: tempCart,
+                                id: tempCart.plan._id,
+                                layout: 'mainLogged',
+                                customer: req.session.customer
+                            });
+                        });
+                } else {
+                    res.render('cart', {
+                        page: page,
+                        cart: true,
+                        layout: 'mainLogged',
+                        customer: req.session.customer
+                    });
+                }
+            });
+    } else {
+        res.redirect('/');
+    }
 });
 
 router.post('/addToCart', (req, res) => {
@@ -452,7 +488,8 @@ router.post('/registration', (req, res) => {
                 company: formData.company,
                 admin: false,
                 customer: true,
-                cart: { planId: null }
+                cart: { planId: null },
+                orders: []
             });
             userInfo.save((err, userNew) => {
                 if (err) {

@@ -15,7 +15,8 @@ const userSchema = new Schema({
     company: { type: String, default: 'N/A' },
     admin: Boolean,
     cart: Object,
-    customer: Boolean
+    customer: Boolean,
+    orders: Array
 });
 
 let User = mongoose.model('user', userSchema);

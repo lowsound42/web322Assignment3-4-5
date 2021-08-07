@@ -47,8 +47,70 @@ function checkForm() {
     );
 }
 
+function getPrice(input) {
+    let removeExtras = input.slice(2).slice(0, -3);
+    return parseFloat(removeExtras);
+}
+
+function getMonths(input) {
+    let removeExtras = '';
+    let lastLetter = input.substr(-1);
+    if (lastLetter === 's') {
+        removeExtras = input.slice(0, -7);
+    } else {
+        removeExtras = input.slice(0, -6);
+    }
+    return parseInt(removeExtras);
+}
+
+function finalCheckout(data) {
+    fetch('/finalCheckout', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ data: data })
+    }).then((response) => console.log(response));
+}
+
 function checkOut(event) {
-    console.log(event);
+    fetch('/plan', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id: event.value })
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            let sumPlan = document.getElementById('summaryPlan');
+            let sumPromo = document.getElementById('summaryPromo');
+            let sumFinal = document.getElementById('summaryTotal');
+            if (sumPlan) {
+                let sumTotal =
+                    ((getPrice(data.price) * 100) / 57) *
+                    getMonths(event.parentElement.children[0].innerHTML);
+                sumPlan.innerHTML = data.title + ' ' + sumTotal.toFixed(2);
+                sumPlan.style.textAlign = 'center';
+                if (sumPromo) {
+                    sumPromo.innerHTML = `PROMO: WEB322  -$${(
+                        sumTotal * 0.35
+                    ).toFixed(2)}`;
+                    let finalTotal = (sumTotal - sumTotal * 0.35).toFixed(2);
+                    sumFinal.innerHTML = `TOTAL: ${finalTotal}`;
+                }
+                let sumButton = document.getElementById('summaryButton');
+                sumButton.innerHTML = '';
+                let sumSubmitButton = document.createElement('button');
+                sumSubmitButton.addEventListener('click', function () {
+                    finalCheckout(data);
+                });
+                sumSubmitButton.innerHTML = 'Checkout';
+                sumButton.appendChild(sumSubmitButton);
+            }
+        });
 }
 
 function getSelection() {
@@ -59,10 +121,19 @@ function getSelection() {
     );
 }
 
+function setSummary() {
+    let sumPlan = document.getElementById('summaryPlan');
+    if (sumPlan) {
+        sumPlan.innerHTML = 'Select one of the pricing options';
+        sumPlan.style.textAlign = 'center';
+    }
+}
+
 window.onload = function () {
     checkForm();
     getName();
     getSelection();
+    setSummary();
 };
 
 function viewPlans() {
