@@ -40,6 +40,7 @@ router.get('/', (req, res) => {
     res.render('index', {
         page: page,
         sesh: sesh,
+        cart: req.session.cart,
         layout: req.session.email ? 'mainLogged' : 'main'
     });
 });
@@ -53,6 +54,7 @@ router.get('/cart', (req, res) => {
     res.render('cart', {
         page: page,
         sesh: sesh,
+        cart: req.session.cart,
         data: req.session.data,
         layout: 'mainLogged'
     });
@@ -147,7 +149,8 @@ router.get('/plans', (req, res) => {
                     page: page,
                     sesh: sesh,
                     adminSesh: adminSesh,
-                    noUser: noUser
+                    noUser: noUser,
+                    cart: req.session.cart
                 });
             } else {
                 res.render('plans', {
@@ -307,7 +310,7 @@ router.post('/login', (req, res) => {
                                     layout: 'mainLogged',
                                     email: formData.email,
                                     origin: 1,
-                                    cart: 0,
+                                    cart: user.cart.length > 0 ? 1 : 0,
                                     sesh: { sesh: true }
                                 };
                                 res.redirect('/dashboard');
@@ -342,12 +345,14 @@ router.post('/login', (req, res) => {
 
 router.get('/dashboard', ensureLogin, (req, res) => {
     if (req.session.admin) {
+        console.log(req.session);
         res.render('adminDashboard', {
             email: req.session.email,
             data: req.session.data,
             page: req.session.page,
             layout: req.session.layout,
-            sesh: req.session.sesh
+            sesh: req.session.sesh,
+            cart: req.session.cart
         });
     } else {
         res.render('dashboard', {
@@ -355,7 +360,8 @@ router.get('/dashboard', ensureLogin, (req, res) => {
             data: req.session.data,
             page: req.session.page,
             layout: req.session.layout,
-            sesh: req.session.sesh
+            sesh: req.session.sesh,
+            cart: req.session.cart
         });
     }
 });
@@ -403,7 +409,7 @@ router.post('/registration', (req, res) => {
                 } else {
                     req.session = {
                         data: formData,
-                        cart: 0,
+                        cart: user.cart.length > 0 ? 1 : 0,
                         page: { dashboard: true },
                         layout: 'mainLogged',
                         origin: 2,
