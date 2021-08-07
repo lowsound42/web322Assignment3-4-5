@@ -47,9 +47,22 @@ function checkForm() {
     );
 }
 
+function checkOut(event) {
+    console.log(event);
+}
+
+function getSelection() {
+    document.querySelectorAll('.priceButton').forEach((element) =>
+        element.addEventListener('click', (event) => {
+            checkOut(event.target);
+        })
+    );
+}
+
 window.onload = function () {
     checkForm();
     getName();
+    getSelection();
 };
 
 function viewPlans() {

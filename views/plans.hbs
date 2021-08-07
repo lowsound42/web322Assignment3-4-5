@@ -40,13 +40,13 @@
     </div>
   </div>
   <div class="container bottom-buffer">
-    {{#if adminSesh.adminSesh}}
+    {{#if adminSesh}}
       {{>card_partial_admin parameterOne=data}}
     {{/if}}
-    {{#if sesh.sesh}}
+    {{#if customerSesh}}
       {{>card_partial_logged parameterOne=data}}
     {{/if}}
-    {{#if noUser.noUser}}
+    {{#if noUser}}
       {{>card_partial parameterOne=data}}
     {{/if}}
   </div>

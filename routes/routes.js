@@ -33,14 +33,19 @@ function ensureLogin(req, res, next) {
 
 router.get('/', (req, res) => {
     let sesh = { sesh: false };
+    let userSesh = false;
     if (req.session.email) {
         sesh.sesh = true;
+    }
+    if (!req.session.admin) {
+        userSesh = true;
     }
     const page = { home: true };
     res.render('index', {
         page: page,
+        customer: req.session.customer,
         sesh: sesh,
-        cart: req.session.cart,
+        cart: userSesh,
         layout: req.session.email ? 'mainLogged' : 'main'
     });
 });
@@ -52,41 +57,53 @@ function getPrice(input) {
 }
 
 router.get('/cart', (req, res) => {
-    let sesh = { sesh: false };
-    if (req.session.email) {
-        sesh.sesh = true;
-    }
     const page = { cart: true };
     let tempCart = req.session.cart;
-    User.findOne({ _id: req.session.data._id })
+    User.findOne({ _id: req.session.id })
         .lean()
         .exec()
         .then((response) => {
-            Plan.findOne({ _id: mongoose.Types.ObjectId(response.cart) })
-                .lean()
-                .exec()
-                .then((response) => {
-                    let priceBase = (getPrice(response.price) * 100) / 57;
-                    tempCart = {
-                        plan: response,
-                        price: (priceBase - (43 / 100) * priceBase).toFixed(2),
-                        one: priceBase.toFixed(2),
-                        twelve: (priceBase - (37 / 100) * priceBase).toFixed(2),
-                        twentyFour: (
-                            priceBase -
-                            (40 / 100) * priceBase
-                        ).toFixed(2)
-                    };
+            if (response.cart.planId !== null) {
+                Plan.findOne({
+                    _id: mongoose.Types.ObjectId(response.cart.planId)
                 })
-                .then((result) => {
-                    res.render('cart', {
-                        page: page,
-                        sesh: sesh,
-                        cart: tempCart,
-                        data: req.session.data,
-                        layout: 'mainLogged'
+                    .lean()
+                    .exec()
+                    .then((response) => {
+                        let priceBase = (getPrice(response.price) * 100) / 57;
+                        tempCart = {
+                            plan: response,
+                            price: (priceBase - (43 / 100) * priceBase).toFixed(
+                                2
+                            ),
+                            one: priceBase.toFixed(2),
+                            twelve: (
+                                priceBase -
+                                (37 / 100) * priceBase
+                            ).toFixed(2),
+                            twentyFour: (
+                                priceBase -
+                                (40 / 100) * priceBase
+                            ).toFixed(2)
+                        };
+                    })
+                    .then((result) => {
+                        res.render('cart', {
+                            page: page,
+                            sesh: sesh,
+                            cart: tempCart,
+                            layout: 'mainLogged',
+                            customer: req.session.customer
+                        });
                     });
+            } else {
+                res.render('cart', {
+                    page: page,
+                    cart: true,
+                    layout: 'mainLogged',
+                    customer: req.session.customer
                 });
+            }
         });
 });
 
@@ -94,7 +111,7 @@ router.post('/addToCart', (req, res) => {
     console.log(req.body.id);
     User.updateOne(
         { email: req.session.email },
-        { $set: { cart: req.body.id } },
+        { $set: { cart: { planId: req.body.id } } },
         function (err, result) {
             if (err) {
                 console.log(err);
@@ -154,17 +171,19 @@ router.patch('/plans/:id', (req, res) => {
 });
 
 router.get('/plans', (req, res) => {
-    let sesh = { sesh: false };
-    let adminSesh = { adminSesh: false };
-    let noUser = { noUser: true };
+    let customerSesh = false;
+    let adminSesh = false;
+    let noUser = true;
     console.log(req.session.admin);
     if (req.session.email) {
         if (req.session.admin) {
-            adminSesh.adminSesh = true;
-            noUser.noUser = false;
+            adminSesh = true;
+            noUser = false;
+            customerSesh = false;
         } else {
-            sesh.sesh = true;
-            noUser.noUser = false;
+            customerSesh = true;
+            noUser = false;
+            adminSesh = false;
         }
     }
     Plan.find()
@@ -177,16 +196,18 @@ router.get('/plans', (req, res) => {
                     layout: 'mainLogged',
                     data: response,
                     page: page,
-                    sesh: sesh,
                     adminSesh: adminSesh,
                     noUser: noUser,
-                    cart: req.session.cart
+                    customerSesh: customerSesh,
+                    cart: req.session.cart,
+                    customer: req.session.customer
                 });
             } else {
                 res.render('plans', {
                     data: response,
                     page: page,
-                    sesh: sesh,
+                    customerSesh: customerSesh,
+                    adminSesh: adminSesh,
                     noUser: noUser
                 });
             }
@@ -239,16 +260,19 @@ router.post('/editPlan', upload, (req, res) => {
 });
 
 router.get('/userDetails', (req, res) => {
-    console.log(req.session.data._id);
-    if (!req.session.admin) {
-        User.findOne({ _id: req.session.data._id })
+    if (req.session.customer) {
+        User.findOne({ _id: req.session.id })
             .lean()
             .exec()
             .then((response) => {
-                Plan.findOne({ _id: mongoose.Types.ObjectId(response.cart) })
-                    .lean()
-                    .exec()
-                    .then((response) => res.send(response));
+                if (response.cart.planId) {
+                    Plan.findOne({
+                        _id: mongoose.Types.ObjectId(response.cart.planId)
+                    })
+                        .lean()
+                        .exec()
+                        .then((response) => res.send(response));
+                }
             });
     }
 });
@@ -333,19 +357,18 @@ router.post('/login', (req, res) => {
                         user.password,
                         function (err, response) {
                             let userCart = false;
-                            if (user.cart) {
-                                userCart = user.cart;
-                            }
                             if (response) {
+                                console.log(user);
                                 req.session = {
+                                    id: user._id,
+                                    firstName: user.firstname,
+                                    lastName: user.lastName,
                                     admin: user.admin,
-                                    data: user,
+                                    customer: user.customer,
                                     page: { dashboard: true },
                                     layout: 'mainLogged',
-                                    email: formData.email,
-                                    origin: 1,
-                                    cart: userCart,
-                                    sesh: { sesh: true }
+                                    email: user.email,
+                                    origin: 1
                                 };
                                 res.redirect('/dashboard');
                             } else {
@@ -379,31 +402,34 @@ router.post('/login', (req, res) => {
 
 router.get('/dashboard', ensureLogin, (req, res) => {
     if (req.session.admin) {
-        console.log(req.session);
         res.render('adminDashboard', {
+            firstName: req.session.firstName,
+            lastName: req.session.lastName,
+            id: req.session.id,
             email: req.session.email,
-            data: req.session.data,
             page: req.session.page,
             layout: req.session.layout,
             sesh: req.session.sesh,
-            cart: req.session.cart
+            cart: req.session.cart,
+            customer: req.session.customer
         });
     } else {
         res.render('dashboard', {
+            firstName: req.session.firstName,
+            lastName: req.session.lastName,
+            id: req.session.id,
             email: req.session.email,
-            data: req.session.data,
             page: req.session.page,
             layout: req.session.layout,
             sesh: req.session.sesh,
-            cart: req.session.cart
+            cart: req.session.cart,
+            customer: req.session.customer
         });
     }
 });
 
 router.post('/registration', (req, res) => {
     let formData = validation.regValidation(req.body);
-    const sesh = req.session;
-
     if (
         formData.pword.length > 0 &&
         formData.pError === false &&
@@ -431,9 +457,10 @@ router.post('/registration', (req, res) => {
                 province: formData.province,
                 company: formData.company,
                 admin: false,
-                cart: ''
+                customer: true,
+                cart: { planId: null }
             });
-            userInfo.save((err) => {
+            userInfo.save((err, userNew) => {
                 if (err) {
                     console.log(err);
                     res.render('registration', {
@@ -443,7 +470,13 @@ router.post('/registration', (req, res) => {
                     });
                 } else {
                     req.session = {
-                        data: formData,
+                        id: userNew._id,
+                        customer: true,
+                        username: formData.uname,
+                        firstName: formData.fname,
+                        lastName: formData.lname,
+                        admin: false,
+                        cart: null,
                         page: { dashboard: true },
                         layout: 'mainLogged',
                         origin: 2,

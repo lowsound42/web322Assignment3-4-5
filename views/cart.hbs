@@ -14,37 +14,51 @@
   <div class="container bottom-buffer">
     <div class="container holder top-buffer reg flexDash">
     <div>
-      
       <h3 class="well bottom-buffer top-padding" id="planHolder"></h3>
      </div>       
      <div>
     </div>
   </div>
   {{#if cart}}
-      <div id="planDetails" class="row">
-        <div class="col-lg card card-body-special">
+    <div id="planDetails">
+        <div class="col-lg card card-body-special priceHolder">
           <div class="card-body"></div>
            <h5 class="card-title">1 Month</h5>
-          <p class="card-text">{{this.cart.one}}</p>
-          <p class="card-text"></p>
-        </div>
-        <div class="col-lg card card-body-special">
+          <p class="card-text">C${{this.cart.one}}/mo</p>
+          <br>
+          <br>     
+          <button class="priceButton">Select this plan</button>
+          </div> 
+        <div class="col-lg card card-body-special priceHolder">
           <div class="card-body"></div>
            <h5 class="card-title">12 Months</h5>
-          <p class="card-text">{{this.cart.twelve}}</p>
-          <p class="card-text"></p>
+          <p class="card-text">C${{this.cart.twelve}}/mo</p>
+          <p class="card-text" style="background-color: yellow;">Save 37%</p>
+          <p class="card-text" style="  text-decoration: line-through">${{this.cart.one}}</p>
+          <button class="priceButton">Select this plan</button>
         </div>
-        <div class="col-lg card card-body-special">
+        <div class="col-lg card card-body-special priceHolder">
           <div class="card-body"></div>
            <h5 class="card-title">24 Months</h5>
-          <p class="card-text">{{this.cart.twentyFour}}</p>
-          <p class="card-text"></p>
+          <p class="card-text">C${{this.cart.twentyFour}}/mo</p>
+          <p class="card-text" style="background-color: yellow;">Save 40%</p>
+          <p class="card-text" style="  text-decoration: line-through">${{this.cart.one}}</p>
+          <button class="priceButton">Select this plan</button>
+        </div>
+        <div class="col-lg card card-body-special priceHolder">
+          <div class="card-body"></div>
+           <h5 class="card-title">36 Months</h5>
+          <p class="card-text">C${{this.cart.price}}/mo</p>
+          <p class="card-text" style="background-color: yellow;">Save 43%</p>
+          <p class="card-text" style="  text-decoration: line-through">${{this.cart.one}}</p>
+          <button class="priceButton">Select this plan</button>
         </div>
         <div class="col-lg card card-body-special">
           <div class="card-body"></div>
-           <h5 class="card-title">36 Months</h5>
-          <p class="card-text">{{this.cart.price}}</p>
-          <p class="card-text"></p>
+           <h5 class="card-title">Order Summary</h5>
+          <p class="card-text">Select a plan</p>
+          <p class="card-text" ></p>
+          <p class="card-text" ></p>
         </div>
     </div>
     {{/if}}

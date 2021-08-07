@@ -131,3 +131,12 @@
     font-weight: bold;
     color: red;
 }
+
+#planDetails {
+    display: flex;
+    flex-direction: row;
+}
+
+.priceHolder:hover {
+    cursor: pointer;
+}

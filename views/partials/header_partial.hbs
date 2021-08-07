@@ -34,14 +34,6 @@
               <a class="nav-link {{#if page.login}} active{{/if}}"  {{#if page.login}} aria-current="page" {{/if}}  href="/login">Login</a>
             </li>
             {{/unless}}
-              {{#if sesh.sesh}}
-                <li class="nav-item">
-                <a class="nav-link {{#if page.dashboard}} active{{/if}}"  {{#if page.dashboard}} aria-current="page" {{/if}}  href="/dashboard">Dashboard</a>
-            </li>
-                        <li>       <form action="/logout" method="GET">  
-      <input class="btn btn-primary btn-md px-4 me-md-2 logout" type="submit" value="Logout">
-    </form></li>
-            {{/if}}
           </ul>
         </div>
       </div>

@@ -14,7 +14,8 @@ const userSchema = new Schema({
     province: String,
     company: { type: String, default: 'N/A' },
     admin: Boolean,
-    cart: String
+    cart: Object,
+    customer: Boolean
 });
 
 let User = mongoose.model('user', userSchema);
