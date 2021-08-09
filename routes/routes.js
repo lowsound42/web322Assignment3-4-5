@@ -226,15 +226,25 @@ router.get('/plans', (req, res) => {
             adminSesh = false;
         }
     }
+    let imgArray = [];
+    let dataArray = [];
     Plan.find()
         .lean()
         .exec()
         .then((response) => {
+            dataArray = response;
+            let newArray = dataArray.map((obj) => ({
+                ...obj,
+                image: {
+                    contentType: obj.img.contentType,
+                    data: obj.img.data.toString('base64')
+                }
+            }));
             const page = { plan: true };
             if (req.session.email) {
                 res.render('plans', {
                     layout: 'mainLogged',
-                    data: response,
+                    data: newArray,
                     page: page,
                     adminSesh: adminSesh,
                     noUser: noUser,
@@ -243,8 +253,15 @@ router.get('/plans', (req, res) => {
                     customer: req.session.customer
                 });
             } else {
+                let newArray = dataArray.map((obj) => ({
+                    ...obj,
+                    image: {
+                        contentType: obj.img.contentType,
+                        data: obj.img.data.toString('base64')
+                    }
+                }));
                 res.render('plans', {
-                    data: response,
+                    data: newArray,
                     page: page,
                     customerSesh: customerSesh,
                     adminSesh: adminSesh,
@@ -320,6 +337,7 @@ router.get('/userDetails', (req, res) => {
 router.post('/uploadPlan', upload, (req, res) => {
     let priceStr = String(req.body.price);
     console.log(req.file.mimetype);
+    console.log(req.body.items);
     let tempArray = [];
     JSON.parse(req.body.items).forEach((element) => {
         tempArray.push(element);
@@ -352,7 +370,6 @@ router.post('/uploadPlan', upload, (req, res) => {
         });
     } else console.log('enter data pls');
     res.redirect('/dashboard');
-    // res.send('cool');
 });
 
 router.get('/login', (req, res) => {

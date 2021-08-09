@@ -10,6 +10,10 @@
   github repo: https://github.com/lowsound42/web322a2
   */
 
+.planPageImage {
+    width: 2rem;
+}
+
 .top-buffer {
     margin-top: 40px;
 }

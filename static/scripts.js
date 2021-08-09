@@ -10,6 +10,10 @@
   All the work in the project is my own except for stock photos, icons, and bootstrap files included<img src="data:image/jpeg;base64,{binary data}" />
 */
 
+function planInjection() {
+    console.log('plans!');
+}
+
 function getName() {
     fetch('/userDetails')
         .then((response) => response.json())
@@ -179,6 +183,7 @@ window.onload = function () {
     getSelection();
     setSummary();
     populateDashboard();
+    planInjection();
 };
 
 function viewPlans() {
@@ -376,10 +381,11 @@ function editPlan(e) {
     picInput.classList.add('form-control');
     picInput.setAttribute('type', 'file');
     picLabel.innerHTML = 'Picture';
-    priceLabel.setAttribute('for', 'title');
-    priceInput.setAttribute('name', 'title');
+    priceLabel.setAttribute('for', 'price');
+    priceInput.setAttribute('name', 'price');
     priceInput.classList.add('form-control');
     priceInput.setAttribute('type', 'number');
+    priceInput.setAttribute('step', '0.01');
     priceLabel.innerHTML = 'Price';
     itemsDiv.classList.add('row');
     itemsDivInner.classList.add('col-lg-12');
@@ -506,10 +512,11 @@ function planForm() {
     picInput.classList.add('form-control');
     picInput.setAttribute('type', 'file');
     picLabel.innerHTML = 'Picture';
-    priceLabel.setAttribute('for', 'title');
-    priceInput.setAttribute('name', 'title');
+    priceLabel.setAttribute('for', 'price');
+    priceInput.setAttribute('name', 'price');
     priceInput.classList.add('form-control');
     priceInput.setAttribute('type', 'number');
+    priceInput.setAttribute('step', '0.01');
     priceLabel.innerHTML = 'Price';
     itemsDiv.classList.add('row');
     itemsDivInner.classList.add('col-lg-12');
@@ -552,7 +559,7 @@ function moreItems() {
     let itemDiv = document.getElementById('items');
     let count = itemDiv.getElementsByTagName('li').length;
     let ref = document.getElementById('specButton');
-    if (count < 5) {
+    if (count < 13) {
         let itemsDivInner = document.createElement('li');
         let itemsLabel = document.createElement('label');
         let itemsInput = document.createElement('input');
@@ -577,21 +584,15 @@ function submitForm(e) {
 
     let itemsArray = [];
     itemsArray.push(e.target.elements[4].value);
-    if (e.target.elements[5].type === 'text') {
-        itemsArray.push(e.target.elements[5].value);
+    let count = e.target.elements.length;
+    console.log(count);
+    for (let i = 5; i <= count - 3; i++) {
+        if (e.target.elements[5].type === 'text') {
+            itemsArray.push(e.target.elements[i].value);
+        }
     }
-    if (e.target.elements[6].type === 'text') {
-        itemsArray.push(e.target.elements[6].value);
-    }
-    if (e.target.elements[7] && e.target.elements[7].type === 'text') {
-        itemsArray.push(e.target.elements[7].value);
-    }
-    if (e.target.elements[8] && e.target.elements[8].type === 'text') {
-        itemsArray.push(e.target.elements[8].value);
-    }
-    if (e.target.elements[9] && e.target.elements[9].type === 'text') {
-        itemsArray.push(e.target.elements[9].value);
-    }
+
+    console.log(itemsArray);
 
     formData.append('title', e.target.elements[0].value);
     formData.append('description', e.target.elements[1].value);
