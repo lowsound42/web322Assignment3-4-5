@@ -28,7 +28,8 @@
               <a class="nav-link {{#if page.dashboard}} active{{/if}}"  {{#if page.dashboard}} aria-current="page" {{/if}} href="/dashboard">Dashboard</a>
             </li>
             {{#if customer}}
-            <li>
+            <li id="cartContainer">
+              <div id="cartFull"></div>
                 <a class="nav-link {{#if page.cart}} active{{/if}}"  {{#if page.cart}} aria-current="page" {{/if}} href="/cart">Cart</a>
             </li>
             {{/if}}

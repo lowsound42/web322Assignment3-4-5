@@ -10,8 +10,28 @@
   All the work in the project is my own except for stock photos, icons, and bootstrap files included<img src="data:image/jpeg;base64,{binary data}" />
 */
 
-function planInjection() {
-    console.log('plans!');
+function checkCart() {
+    fetch('/orders')
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data);
+            let emptyButton = document.getElementById('emptyButton');
+            emptyButton.setAttribute('value', data._id);
+            emptyButton.addEventListener('click', (event) => {
+                emptyCart(event.target.value);
+            });
+            if (data.cart.planId != null) {
+                let container = document.getElementById('cartContainer');
+                container.style.position = 'relative';
+                let cartHolder = document.getElementById('cartFull');
+                cartHolder.style.height = '1rem';
+                cartHolder.style.width = '1rem';
+                cartHolder.style.backgroundColor = 'red';
+                cartHolder.style.borderRadius = '50%';
+                cartHolder.style.position = 'absolute';
+                cartHolder.style.right = '10%';
+            }
+        });
 }
 
 function getName() {
@@ -97,6 +117,30 @@ function populateDashboard() {
                     orderContainer.appendChild(orderHolder);
                     data.orders.forEach((element) => {
                         console.log(element);
+                        let priceBase = (getPrice(element.price) * 100) / 57;
+                        let planPrice;
+                        switch (element.months) {
+                            case 36:
+                                planPrice = getPrice(element.price);
+                                break;
+                            case 24:
+                                planPrice = (
+                                    priceBase -
+                                    (40 / 100) * priceBase
+                                ).toFixed(2);
+                                break;
+                            case 12:
+                                planPrice = (
+                                    priceBase -
+                                    (37 / 100) * priceBase
+                                ).toFixed(2);
+                                break;
+                            case 1:
+                                planPrice = priceBase.toFixed(2);
+                                break;
+                            default:
+                                break;
+                        }
                         let cardHolder = document.createElement('div');
                         let cardTitle = document.createElement('h5');
                         let cardTextOne = document.createElement('p');
@@ -104,7 +148,7 @@ function populateDashboard() {
                         cardTitle.classList.add('card-title');
                         cardTextOne.classList.add('card-text');
                         cardTitle.innerHTML = element.title;
-                        cardTextOne.innerHTML = `${element.months} month plan at ${element.price}`;
+                        cardTextOne.innerHTML = `${element.months} month plan at $${planPrice}/mo`;
                         cardHolder.appendChild(cardTitle);
                         cardHolder.appendChild(cardTextOne);
                         orderHolder.appendChild(cardHolder);
@@ -177,13 +221,22 @@ function setSummary() {
     }
 }
 
+function emptyCart(data) {
+    console.log(data);
+    fetch('/cart/:' + data, {
+        method: 'PATCH'
+    })
+        .then((response) => response.json())
+        .then((data) => console.log(data));
+}
+
 window.onload = function () {
     checkForm();
     getName();
     getSelection();
     setSummary();
     populateDashboard();
-    planInjection();
+    checkCart();
 };
 
 function viewPlans() {

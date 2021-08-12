@@ -172,6 +172,20 @@ router.get('/planData', (req, res) => {
         });
 });
 
+router.patch('/cart/:id', (req, res) => {
+    User.updateOne(
+        { email: req.session.email },
+        { $set: { cart: { planId: null } } },
+        function (err, result) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log('Cart updated!');
+            }
+        }
+    );
+});
+
 router.delete('/plans/:id', (req, res) => {
     console.log(req.params.id.substr(1));
     Plan.deleteOne({ _id: req.params.id.substr(1) }, function (err) {
@@ -470,6 +484,7 @@ router.get('/dashboard', ensureLogin, (req, res) => {
             customer: req.session.customer
         });
     } else {
+        console.log(req.session);
         res.render('dashboard', {
             firstName: req.session.firstName,
             lastName: req.session.lastName,

@@ -21,7 +21,9 @@
   </div>
   {{#if cart}}
   {{#unless tempCart}}
-  HELLO
+  <div>
+    <p>Your cart is currently empty. Pick a plan from <a href="/plans">here</a> first!</p>
+  </div>
   {{/unless}}
   {{#if tempCart}}
     <div id="planDetails">
@@ -73,8 +75,9 @@
           <div id="summaryButton"></div>
         </div>
       </div> 
-
     </div>
+      <button id="emptyButton">Empty your cart</button>
+
     {{/if}}
     {{/if}}
   <script src="./bootstrap-5.0.1-dist/js/bootstrap.bundle.js"></script>
