@@ -57,16 +57,11 @@ router.get('/orders', (req, res) => {
 });
 
 router.get('/', (req, res) => {
-    let userSesh = false;
-    if (!req.session.admin) {
-        userSesh = true;
-    }
     const page = { home: true };
     res.render('index', {
+        layout: req.session.email ? 'mainLogged' : 'main',
         page: page,
-        customer: req.session.customer,
-        cart: userSesh,
-        layout: req.session.email ? 'mainLogged' : 'main'
+        customer: req.session.customer
     });
 });
 
@@ -181,6 +176,7 @@ router.patch('/cart/:id', (req, res) => {
                 console.log(err);
             } else {
                 console.log('Cart updated!');
+                res.json({ message: 'cart updated' });
             }
         }
     );
@@ -193,6 +189,7 @@ router.delete('/plans/:id', (req, res) => {
             return handleError(err);
         } else {
             console.log('deleted!');
+            res.send('deleted');
         }
     });
 });
@@ -343,6 +340,8 @@ router.get('/userDetails', (req, res) => {
                         .lean()
                         .exec()
                         .then((response) => res.send(response));
+                } else {
+                    res.send('nothing to report');
                 }
             });
     }
@@ -435,6 +434,7 @@ router.post('/login', (req, res) => {
                                     firstName: user.firstname,
                                     lastName: user.lastName,
                                     admin: user.admin,
+                                    cart: user.cart.planId,
                                     customer: user.customer,
                                     page: { dashboard: true },
                                     layout: 'mainLogged',

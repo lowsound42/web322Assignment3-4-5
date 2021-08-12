@@ -10,16 +10,19 @@
   All the work in the project is my own except for stock photos, icons, and bootstrap files included<img src="data:image/jpeg;base64,{binary data}" />
 */
 
-function checkCart() {
+function checkCart(check) {
+    console.log('CARTCACWA');
     fetch('/orders')
         .then((response) => response.json())
         .then((data) => {
             console.log(data);
             let emptyButton = document.getElementById('emptyButton');
-            emptyButton.setAttribute('value', data._id);
-            emptyButton.addEventListener('click', (event) => {
-                emptyCart(event.target.value);
-            });
+            if (emptyButton) {
+                emptyButton.setAttribute('value', data._id);
+                emptyButton.addEventListener('click', (event) => {
+                    emptyCart(event.target.value);
+                });
+            }
             if (data.cart.planId != null) {
                 let container = document.getElementById('cartContainer');
                 container.style.position = 'relative';
@@ -30,6 +33,9 @@ function checkCart() {
                 cartHolder.style.borderRadius = '50%';
                 cartHolder.style.position = 'absolute';
                 cartHolder.style.right = '10%';
+            } else if (check) {
+                let cartHolder = document.getElementById('cartFull');
+                cartHolder.attributeStyleMap.clear();
             }
         });
 }
@@ -57,10 +63,34 @@ function addToCart(id) {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({ id: id })
-    }).then((response) => console.log(response));
-    // setTimeout(() => {
-    //     viewPlans();
-    // }, 2000);
+    })
+        .then((response) => console.log(response))
+        .then((data) => {
+            document
+                .querySelectorAll('.purchaseButton')
+                .forEach((element) => element.setAttribute('disabled', 'true'));
+            let banner = document.getElementById('purchaseConfirm');
+            banner.innerHTML = 'YOU GOT A THING';
+            banner.style.display = 'block';
+            banner.style.textAlign = 'center';
+            banner.style.backgroundColor = 'cyan';
+            banner.style.color = 'white';
+            banner.style.height = '4rem';
+            banner.style.position = 'absolute';
+            banner.style.top = '50%';
+            banner.style.width = '100%';
+            setTimeout(() => {
+                banner.innerHTML = '';
+                banner.style.display = 'none';
+                document
+                    .querySelectorAll('.purchaseButton')
+                    .forEach((element) => {
+                        console.log(element);
+                        element.disabled = false;
+                    });
+            }, 2000);
+        })
+        .then((final) => checkCart(false));
 }
 
 function checkForm() {
@@ -88,7 +118,6 @@ function getMonths(input) {
 }
 
 function finalCheckout(data) {
-    console.log(data);
     fetch('/finalCheckout', {
         method: 'POST',
         headers: {
@@ -96,11 +125,17 @@ function finalCheckout(data) {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({ data: data })
-    }).then((response) => console.log(response));
+    })
+        .then((response) => console.log(response))
+        .then(() => emptyCart())
+        .then((final) =>
+            setTimeout(() => {
+                location.reload();
+            }, 1000)
+        );
 }
 
 function populateDashboard() {
-    console.log('test');
     let apiCheck = document.getElementById('userDash');
     if (apiCheck) {
         fetch('/orders')
@@ -227,7 +262,11 @@ function emptyCart(data) {
         method: 'PATCH'
     })
         .then((response) => response.json())
-        .then((data) => console.log(data));
+        .then((data) => {
+            console.log(data);
+        })
+        .then((final) => checkCart(true))
+        .catch((err) => console.log(err));
 }
 
 window.onload = function () {

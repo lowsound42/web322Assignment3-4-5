@@ -123,6 +123,10 @@
     padding-left: 0rem;
 }
 
+#planBody {
+    position: relative;
+}
+
 .itemButton {
     height: 2rem;
 }

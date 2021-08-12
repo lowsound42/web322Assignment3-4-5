@@ -26,7 +26,7 @@
   <link rel="stylesheet" href="./styles/custom.css">
 </head>
 
-<body>
+<body id="planBody">
   <div class="container">
     <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
       <div class=" col-sm-20 col-lg-6">
@@ -50,6 +50,7 @@
       {{>card_partial parameterOne=data parameterTwo=images}}
     {{/if}}
   </div>
+  <div id="purchaseConfirm"></div>
   <script src="./bootstrap-5.0.1-dist/js/bootstrap.bundle.js"></script>
   <script type="module" src='./scripts.js'>  </script>
 </body>
