@@ -33,7 +33,7 @@
           <p class="card-text">C${{this.cart.one}}/mo</p>
           <br>
           <br>     
-          <button class="priceButton" value={{this.id}}>Select this plan</button>
+          <button class="btn btn-primary btn-sm priceButton" value={{this.id}}>Select this plan</button>
           </div> 
                     </div> 
 
@@ -43,7 +43,7 @@
           <p class="card-text">C${{this.cart.twelve}}/mo</p>
           <p class="card-text" style="background-color: yellow;">Save 37%</p>
           <p class="card-text" style="  text-decoration: line-through">${{this.cart.one}}</p>
-          <button class="priceButton" value={{this.id}}>Select this plan</button>
+          <button class="btn btn-primary btn-sm priceButton" value={{this.id}}>Select this plan</button>
           </div>
         </div>
         <div class="col-lg card card-body-special priceHolder">
@@ -52,7 +52,7 @@
           <p class="card-text">C${{this.cart.twentyFour}}/mo</p>
           <p class="card-text" style="background-color: yellow;">Save 40%</p>
           <p class="card-text" style="  text-decoration: line-through">${{this.cart.one}}</p>
-          <button class="priceButton" value={{this.id}}>Select this plan</button>
+          <button class="btn btn-primary btn-sm priceButton" value={{this.id}}>Select this plan</button>
         </div>
                   </div> 
 
@@ -62,7 +62,7 @@
           <p class="card-text">C${{this.cart.price}}/mo</p>
           <p class="card-text" style="background-color: yellow;">Save 43%</p>
           <p class="card-text" style="  text-decoration: line-through">${{this.cart.one}}</p>
-          <button class="priceButton" value={{{this.id}}}>Select this plan</button>
+          <button class="btn btn-primary btn-sm priceButton" value={{{this.id}}}>Select this plan</button>
         </div>
                   </div> 
 
@@ -76,7 +76,7 @@
         </div>
       </div> 
     </div>
-      <button id="emptyButton">Empty your cart</button>
+      <button class="btn btn-primary btn-md" id="emptyButton">Empty your cart</button>
 
     {{/if}}
     {{/if}}

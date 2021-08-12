@@ -189,7 +189,7 @@ router.delete('/plans/:id', (req, res) => {
             return handleError(err);
         } else {
             console.log('deleted!');
-            res.send('deleted');
+            res.send({ message: 'deleted' });
         }
     });
 });
@@ -289,42 +289,43 @@ router.post('/editPlan', upload, (req, res) => {
     JSON.parse(req.body.items).forEach((element) => {
         tempArray.push(element);
     });
-    var newPlan = new Plan({
-        title: req.body.title,
-        description: req.body.description,
-        price: `C$${priceStr}/mo`,
-        items: tempArray,
-        img: {
-            data: fs.readFileSync(
-                path.join('./static/photos/' + req.file.filename)
-            ),
-            contentType: req.file.mimetype
-        },
-        chosenOne: false
-    });
-    if (
-        newPlan.title.length > 0 &&
-        newPlan.description.length > 0 &&
-        newPlan.price.length > 0 &&
-        newPlan.items.length > 0
-    ) {
-        Plan.deleteOne({ _id: req.body._id })
-            .lean()
-            .exec()
-            .then((response) => {
-                console.log(response);
-                newPlan.save((err) => {
-                    if (err) {
-                        console.log('Error saving the plan');
-                    } else {
-                        console.log('Plan saved!');
-                    }
+    if (req.file !== undefined) {
+        var newPlan = new Plan({
+            title: req.body.title,
+            description: req.body.description,
+            price: `C$${priceStr}/mo`,
+            items: tempArray,
+            img: {
+                data: fs.readFileSync(
+                    path.join('./static/photos/' + req.file.filename)
+                ),
+                contentType: req.file.mimetype
+            },
+            chosenOne: false
+        });
+        if (
+            newPlan.title.length > 0 &&
+            newPlan.description.length > 0 &&
+            newPlan.price.length > 0 &&
+            newPlan.items.length > 0
+        ) {
+            Plan.deleteOne({ _id: req.body._id })
+                .lean()
+                .exec()
+                .then((response) => {
+                    console.log(response);
+                    newPlan.save((err) => {
+                        if (err) {
+                            res.send({ error: 'Error saving the plan' });
+                        } else {
+                            res.send({ success: 'Plan saved!' });
+                        }
+                    });
                 });
-            });
+        } else res.send({ validError: 'Enter all data' });
     } else {
-        console.log('no data');
+        res.send({ picError: 'Image must be correct format' });
     }
-    res.redirect('/dashboard');
 });
 
 router.get('/userDetails', (req, res) => {
@@ -341,7 +342,7 @@ router.get('/userDetails', (req, res) => {
                         .exec()
                         .then((response) => res.send(response));
                 } else {
-                    res.send('nothing to report');
+                    res.send({ message: 'nothing to report' });
                 }
             });
     }
@@ -349,40 +350,42 @@ router.get('/userDetails', (req, res) => {
 
 router.post('/uploadPlan', upload, (req, res) => {
     let priceStr = String(req.body.price);
-    console.log(req.file.mimetype);
     console.log(req.body.items);
     let tempArray = [];
     JSON.parse(req.body.items).forEach((element) => {
         tempArray.push(element);
     });
-    var newPlan = new Plan({
-        title: req.body.title,
-        description: req.body.description,
-        price: `C$${priceStr}/mo`,
-        items: tempArray,
-        img: {
-            data: fs.readFileSync(
-                path.join('./static/photos/' + req.file.filename)
-            ),
-            contentType: req.file.mimetype
-        },
-        chosenOne: false
-    });
-    if (
-        newPlan.title.length > 0 &&
-        newPlan.description.length > 0 &&
-        newPlan.price.length > 0 &&
-        newPlan.items.length > 0
-    ) {
-        newPlan.save((err) => {
-            if (err) {
-                console.log('Error saving the plan');
-            } else {
-                console.log('Plan saved!');
-            }
+    if (req.file !== undefined) {
+        var newPlan = new Plan({
+            title: req.body.title,
+            description: req.body.description,
+            price: `C$${priceStr}/mo`,
+            items: tempArray,
+            img: {
+                data: fs.readFileSync(
+                    path.join('./static/photos/' + req.file.filename)
+                ),
+                contentType: req.file.mimetype
+            },
+            chosenOne: false
         });
-    } else console.log('enter data pls');
-    res.redirect('/dashboard');
+        if (
+            newPlan.title.length > 0 &&
+            newPlan.description.length > 0 &&
+            newPlan.price.length > 0 &&
+            newPlan.items.length > 0
+        ) {
+            newPlan.save((err) => {
+                if (err) {
+                    res.send({ error: 'Error saving the plan' });
+                } else {
+                    res.send({ success: 'Plan saved!' });
+                }
+            });
+        } else res.send({ validError: 'Enter all data' });
+    } else {
+        res.send({ picError: 'Image must be correct format' });
+    }
 });
 
 router.get('/login', (req, res) => {
@@ -434,7 +437,7 @@ router.post('/login', (req, res) => {
                                     firstName: user.firstname,
                                     lastName: user.lastName,
                                     admin: user.admin,
-                                    cart: user.cart.planId,
+                                    cart: user.admin ? false : user.cart.planId,
                                     customer: user.customer,
                                     page: { dashboard: true },
                                     layout: 'mainLogged',

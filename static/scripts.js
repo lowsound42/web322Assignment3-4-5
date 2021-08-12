@@ -23,7 +23,7 @@ function checkCart(check) {
                     emptyCart(event.target.value);
                 });
             }
-            if (data.cart.planId != null) {
+            if (data.cart && data.cart.planId != null) {
                 let container = document.getElementById('cartContainer');
                 container.style.position = 'relative';
                 let cartHolder = document.getElementById('cartFull');
@@ -265,7 +265,12 @@ function emptyCart(data) {
         .then((data) => {
             console.log(data);
         })
-        .then((final) => checkCart(true))
+        .then((result) => checkCart(true))
+        .then((result) => {
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
+        })
         .catch((err) => console.log(err));
 }
 
@@ -335,6 +340,18 @@ function viewPlans() {
                 editButton.setAttribute('onclick', 'editPlan(event);');
                 editButton.setAttribute('value', element._id);
                 editButton.innerHTML = 'Edit Plan';
+                deleteButton.classList.add('deleteButtonAdmin');
+                editButton.classList.add('editButtonAdmin');
+                popButton.classList.add('popButtonAdmin');
+                deleteButton.classList.add('btn');
+                deleteButton.classList.add('btn-primary');
+                deleteButton.classList.add('btn-sm');
+                popButton.classList.add('btn');
+                popButton.classList.add('btn-primary');
+                popButton.classList.add('btn-sm');
+                editButton.classList.add('btn');
+                editButton.classList.add('btn-primary');
+                editButton.classList.add('btn-sm');
                 innerDiv.appendChild(header);
                 innerDiv.appendChild(p1);
                 innerDiv.appendChild(p2);
@@ -390,7 +407,9 @@ function editForm(e) {
     fetch('/editPlan', {
         method: 'POST',
         body: formData
-    }).then((response) => console.log(response));
+    })
+        .then((response) => response.json())
+        .then((result) => console.log(result));
     setTimeout(() => {
         viewPlans();
     }, 2000);
@@ -432,6 +451,9 @@ function editPlan(e) {
     itemsDiv.setAttribute('id', 'items');
     let addItem = document.createElement('button');
     addItem.setAttribute('id', 'specButton');
+    addItem.classList.add('btn');
+    addItem.classList.add('btn-primary');
+    addItem.classList.add('btn-sm');
     let picDiv = document.createElement('div');
     let picDivInner = document.createElement('div');
     let titleLabel = document.createElement('label');
@@ -487,6 +509,9 @@ function editPlan(e) {
     itemsInput.classList.add('form-control');
     itemsInput.setAttribute('type', 'textarea');
     itemsLabel.innerHTML = 'Items';
+    submitButton.classList.add('btn');
+    submitButton.classList.add('btn-primary');
+    submitButton.classList.add('btn-sm');
     container.appendChild(formContainer);
     formContainer.appendChild(idDiv);
     formContainer.appendChild(titleDiv);
@@ -563,6 +588,9 @@ function planForm() {
     itemsDiv.setAttribute('id', 'items');
     let addItem = document.createElement('button');
     addItem.setAttribute('id', 'specButton');
+    addItem.classList.add('btn');
+    addItem.classList.add('btn-primary');
+    addItem.classList.add('btn-sm');
     let picDiv = document.createElement('div');
     let picDivInner = document.createElement('div');
     let titleLabel = document.createElement('label');
@@ -577,6 +605,9 @@ function planForm() {
     let picInput = document.createElement('input');
     let submitButton = document.createElement('input');
     submitButton.setAttribute('type', 'submit');
+    submitButton.classList.add('btn');
+    submitButton.classList.add('btn-primary');
+    submitButton.classList.add('btn-sm');
     titleDiv.classList.add('row');
     titleDivInner.classList.add('col-lg-12');
     titleDivInner.classList.add('form-group');
@@ -695,8 +726,10 @@ function submitForm(e) {
     fetch('/uploadPlan', {
         method: 'POST',
         body: formData
-    }).then((response) => console.log(response));
+    })
+        .then((response) => response.json())
+        .then((result) => console.log(result));
     setTimeout(() => {
         viewPlans();
-    }, 1000);
+    }, 2000);
 }

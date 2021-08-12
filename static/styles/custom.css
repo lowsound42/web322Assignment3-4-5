@@ -12,6 +12,7 @@
 
 .planPageImage {
     width: 2rem;
+    margin-bottom: 1rem;
 }
 
 .top-buffer {
@@ -39,6 +40,14 @@
     background-color: #ffffff;
 }
 
+.deleteButtonAdmin,
+.popButtonAdmin,
+.editButtonAdmin {
+    margin-right: 1rem;
+    font-size: 0.8rem;
+    margin-top: 1rem;
+}
+
 .card-list {
     border: 1px black solid;
 }
@@ -48,6 +57,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+#emptyButton {
+    margin-top: 2rem;
+}
+
+.hidden {
+    display: none;
 }
 
 .reg {
@@ -129,10 +146,16 @@
 
 .itemButton {
     height: 2rem;
+    width: 20%;
+}
+
+#planTitle {
+    padding-left: 0rem;
 }
 
 .planImage {
-    width: 10rem;
+    width: 2rem;
+    margin-top: 1rem;
 }
 
 .popular {
