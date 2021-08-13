@@ -52,6 +52,12 @@
     border: 1px black solid;
 }
 
+.adminContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
 .card-body-special {
     margin: 0rem 1rem;
     display: flex;
@@ -63,6 +69,22 @@
     margin-top: 2rem;
     margin-right: 1rem;
     margin-left: 1rem;
+}
+
+#errorBox {
+    color: red;
+}
+
+.modalPara {
+    animation: blinker 1s linear infinite;
+    font-weight: bold;
+    margin-top: 1.5rem;
+}
+
+@keyframes blinker {
+    50% {
+        opacity: 0;
+    }
 }
 
 .hidden {
@@ -194,9 +216,21 @@
     cursor: pointer;
 }
 
+#card {
+    font-size: 0.7rem;
+}
+
 @media only screen and (max-width: 750px) {
     #planDetails {
         display: flex;
         flex-direction: column;
+    }
+
+    .adminContainer {
+        flex-direction: column;
+    }
+
+    .adminContainer #create {
+        margin-top: 1rem;
     }
 }

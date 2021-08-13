@@ -23,7 +23,7 @@ function checkCart(check) {
                     emptyCart(event.target.value);
                 });
             }
-            if (data.cart && data.cart.planId != null) {
+            if (data && data.cart && data.cart.planId != null) {
                 let container = document.getElementById('cartContainer');
                 container.style.position = 'relative';
                 let cartHolder = document.getElementById('cartFull');
@@ -401,7 +401,13 @@ function editForm(e) {
     modal.style.top = '10%';
     modal.style.border = '1px black solid';
     modal.style.textAlign = 'center';
-    modal.innerHTML = 'LOADING...';
+    let modalPara = document.createElement('p');
+    let modalText = document.createTextNode(
+        'Plan is being uploaded, please wait...'
+    );
+    modalPara.classList.add('modalPara');
+    modalPara.appendChild(modalText);
+    modal.appendChild(modalPara);
     container.appendChild(modal);
     console.log(e.target);
     var formData = new FormData();
@@ -766,7 +772,13 @@ function submitForm(e) {
     modal.style.top = '10%';
     modal.style.border = '1px black solid';
     modal.style.textAlign = 'center';
-    modal.innerHTML = 'LOADING...';
+    let modalPara = document.createElement('p');
+    let modalText = document.createTextNode(
+        'Plan is being uploaded, please wait...'
+    );
+    modalPara.classList.add('modalPara');
+    modalPara.appendChild(modalText);
+    modal.appendChild(modalPara);
     container.appendChild(modal);
     errorBox.innerHTML = '';
     var formData = new FormData();
