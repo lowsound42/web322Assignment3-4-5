@@ -21,6 +21,7 @@ This is my submission for assignments 3, 4, and 5 of Web322.
 
 ### Keep in mind:
 
+-   User and admin sessions are set to last for 30 mins with extensions of 2 minutes with activity.
 -   The admin user can only create a maximum of 6 pricing plans. This is done to keep the page orderly.
 -   Similarly, I have capped the number of items that can be added to a plan (that is, the plan features) to a maximum of 13 to be equal to the number of features in the 'Enterprise' plan. Again, this is done to keep things a bit simpler.
 -   The admin can change which plan is the most popular
