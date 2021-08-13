@@ -349,43 +349,62 @@ router.get('/userDetails', (req, res) => {
 });
 
 router.post('/uploadPlan', upload, (req, res) => {
-    let priceStr = String(req.body.price);
-    console.log(req.body.items);
-    let tempArray = [];
-    JSON.parse(req.body.items).forEach((element) => {
-        tempArray.push(element);
-    });
-    if (req.file !== undefined) {
-        var newPlan = new Plan({
-            title: req.body.title,
-            description: req.body.description,
-            price: `C$${priceStr}/mo`,
-            items: tempArray,
-            img: {
-                data: fs.readFileSync(
-                    path.join('./static/photos/' + req.file.filename)
-                ),
-                contentType: req.file.mimetype
-            },
-            chosenOne: false
-        });
-        if (
-            newPlan.title.length > 0 &&
-            newPlan.description.length > 0 &&
-            newPlan.price.length > 0 &&
-            newPlan.items.length > 0
-        ) {
-            newPlan.save((err) => {
-                if (err) {
-                    res.send({ error: 'Error saving the plan' });
-                } else {
-                    res.send({ success: 'Plan saved!' });
-                }
+    Plan.countDocuments({}, function (err, count) {
+        console.log(count);
+        if (count < 6) {
+            let priceStr = String(req.body.price);
+            console.log(req.body.items);
+            let tempArray = [];
+            JSON.parse(req.body.items).forEach((element) => {
+                tempArray.push(element);
             });
-        } else res.send({ validError: 'Enter all data' });
-    } else {
-        res.send({ picError: 'Image must be correct format' });
-    }
+            if (req.file !== undefined) {
+                var newPlan = new Plan({
+                    title: req.body.title,
+                    description: req.body.description,
+                    price: `C$${priceStr}/mo`,
+                    items: tempArray,
+                    img: {
+                        data: fs.readFileSync(
+                            path.join('./static/photos/' + req.file.filename)
+                        ),
+                        contentType: req.file.mimetype
+                    },
+                    chosenOne: false
+                });
+                if (
+                    newPlan.title.length > 0 &&
+                    newPlan.description.length > 0 &&
+                    newPlan.price.length > 0 &&
+                    newPlan.items.length > 0
+                ) {
+                    Plan.exists(
+                        { title: newPlan.title },
+                        function (error, doc) {
+                            if (doc) {
+                                res.send({ exists: 'the plan already exists' });
+                            } else {
+                                console.log('happening');
+                                newPlan.save((err) => {
+                                    if (err) {
+                                        res.send({
+                                            error: 'Error saving the plan'
+                                        });
+                                    } else {
+                                        res.send({ success: 'Plan saved!' });
+                                    }
+                                });
+                            }
+                        }
+                    );
+                } else res.send({ validError: 'Enter all data' });
+            } else {
+                res.send({ picError: 'Image must be correct format' });
+            }
+        } else {
+            res.send({ limit: 'You cannot add more than 6 plans' });
+        }
+    });
 });
 
 router.get('/login', (req, res) => {

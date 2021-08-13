@@ -149,6 +149,10 @@ function populateDashboard() {
                 if (data.orders.length > 0) {
                     let orderContainer =
                         document.getElementById('orderContainer');
+                    orderContainer.innerHTML = '';
+                    let prevOrderTitle = document.createElement('h5');
+                    prevOrderTitle.innerHTML = 'Your previous orders:';
+                    orderContainer.appendChild(prevOrderTitle);
                     let orderHolder = document.createElement('div');
                     orderHolder.classList.add('col-lg');
                     orderHolder.classList.add('card');
@@ -815,6 +819,16 @@ function submitForm(e) {
             } else if (result.validError) {
                 submitBut.disabled = false;
                 errorBox.innerHTML = 'Please enter all the data for the plan';
+            } else if (result.exists) {
+                submitBut.disabled = false;
+                errorBox.innerHTML = `The ${e.target.elements[0].value} plan already exists!`;
+            } else if (result.limit) {
+                modal.style.display = 'none';
+                submitBut.disabled = false;
+                errorBox.innerHTML = `You cannot have more than 6 active plans`;
+                setTimeout(() => {
+                    viewPlans();
+                }, 1000);
             } else {
                 setTimeout(() => {
                     viewPlans();
