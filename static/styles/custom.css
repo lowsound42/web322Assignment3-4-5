@@ -55,7 +55,9 @@
 .adminContainer {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: flex-start;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
 }
 
 .card-body-special {
@@ -93,7 +95,10 @@
 
 .reg {
     border-radius: 20px;
-    padding: 2rem;
+}
+
+#orderContainer {
+    margin-top: 2rem;
 }
 
 .top-padding {
@@ -187,6 +192,10 @@
     margin-top: 2rem;
 }
 
+.adminContainer #create {
+    margin-left: 1rem;
+}
+
 .buttonContainer {
     display: flex;
     flex-direction: row;
@@ -232,5 +241,6 @@
 
     .adminContainer #create {
         margin-top: 1rem;
+        margin-left: 0rem;
     }
 }

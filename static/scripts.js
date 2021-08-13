@@ -813,24 +813,35 @@ function submitForm(e) {
         .then((result) => {
             let errorBox = document.getElementById('errorBox');
             let modal = document.getElementById('modal');
-            modal.style.display = 'none';
             if (result.picError) {
+                modal.style.display = 'none';
                 submitBut.disabled = false;
                 errorBox.innerHTML =
                     'Plan must have an image and image must be a valid format (jpg/jpeg/gif)';
+                setTimeout(() => {
+                    planForm();
+                }, 2000);
             } else if (result.validError) {
+                modal.style.display = 'none';
                 submitBut.disabled = false;
                 errorBox.innerHTML = 'Please enter all the data for the plan';
+                setTimeout(() => {
+                    planForm();
+                }, 2000);
             } else if (result.exists) {
+                modal.style.display = 'none';
                 submitBut.disabled = false;
                 errorBox.innerHTML = `The ${e.target.elements[0].value} plan already exists!`;
+                setTimeout(() => {
+                    planForm();
+                }, 2000);
             } else if (result.limit) {
                 modal.style.display = 'none';
                 submitBut.disabled = false;
                 errorBox.innerHTML = `You cannot have more than 6 active plans`;
                 setTimeout(() => {
-                    viewPlans();
-                }, 1000);
+                    planForm();
+                }, 2000);
             } else {
                 setTimeout(() => {
                     viewPlans();
