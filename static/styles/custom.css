@@ -31,6 +31,10 @@
     margin-bottom: 40px;
 }
 
+.cancelButton {
+    margin-right: 0.5rem;
+}
+
 .gradient {
     background: #097ffa linear-gradient(40deg, #c0242e 0, #097ffa 100%) fixed !important;
 }
