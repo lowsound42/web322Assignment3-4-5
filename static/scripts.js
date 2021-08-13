@@ -229,6 +229,8 @@ function checkOut(event) {
                 sumPlan.innerHTML = data.title + ' ' + sumTotal.toFixed(2);
                 sumPlan.style.fontWeight = 'bold';
                 let buttonHolder = document.getElementById('checkButContainer');
+                buttonHolder.innerHTML = '';
+
                 if (sumPromo) {
                     sumPromo.innerHTML = `PROMO: WEB322  -$${(
                         sumTotal * 0.35
