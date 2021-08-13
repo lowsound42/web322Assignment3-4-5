@@ -93,7 +93,8 @@ function addToCart(id) {
                     });
             }, 3000);
         })
-        .then((final) => checkCart(false));
+        .then((final) => checkCart(false))
+        .then((result) => (window.location = '/cart'));
 }
 
 function checkForm() {
@@ -223,6 +224,7 @@ function checkOut(event) {
                 );
                 sumPlan.innerHTML = data.title + ' ' + sumTotal.toFixed(2);
                 sumPlan.style.fontWeight = 'bold';
+                let buttonHolder = document.getElementById('checkButContainer');
                 if (sumPromo) {
                     sumPromo.innerHTML = `PROMO: WEB322  -$${(
                         sumTotal * 0.35
@@ -242,9 +244,10 @@ function checkOut(event) {
                 });
                 sumSubmitButton.classList.add('btn');
                 sumSubmitButton.classList.add('btn-primary');
-                sumSubmitButton.classList.add('btn-sm');
+                sumSubmitButton.classList.add('btn-md');
+                sumSubmitButton.setAttribute('id', 'checkoutButton');
                 sumSubmitButton.innerHTML = 'Checkout';
-                sumButton.appendChild(sumSubmitButton);
+                buttonHolder.appendChild(sumSubmitButton);
             }
         });
 }

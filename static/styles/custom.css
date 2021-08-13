@@ -61,6 +61,8 @@
 
 #emptyButton {
     margin-top: 2rem;
+    margin-right: 1rem;
+    margin-left: 1rem;
 }
 
 .hidden {
@@ -157,6 +159,16 @@
 
 .summaryCard {
     border: 5px solid green;
+}
+
+#checkoutButton {
+    margin-top: 2rem;
+}
+
+.buttonContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
 }
 
 .planImage {
