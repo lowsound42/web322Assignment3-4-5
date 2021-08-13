@@ -14,8 +14,8 @@ router.use(
     clientSessions({
         cookieName: 'session', // this is the object name that will be added to 'req'
         secret: 'hosterShmoster6524', // this should be a long un-guessable string.
-        duration: 60 * 60 * 1000, // duration of the session in milliseconds (5 minutes)
-        activeDuration: 2 * 1000 * 60 // the session will be extended by this many ms each request (1 minute)
+        duration: 30 * 60 * 1000, // duration of the session in milliseconds (30 minutes)
+        activeDuration: 2 * 1000 * 60 // the session will be extended by this many ms each request (2 minute)
     })
 );
 
