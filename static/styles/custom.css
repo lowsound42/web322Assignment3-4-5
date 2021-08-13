@@ -50,7 +50,9 @@
 
 .deleteButtonAdmin,
 .popButtonAdmin,
-.editButtonAdmin {
+.editButtonAdmin,
+.yesButtonAdmin,
+.noButtonAdmin {
     margin-right: 1rem;
     font-size: 0.8rem;
     margin-top: 1rem;
@@ -87,6 +89,11 @@
 
 .modalPara {
     animation: blinker 1s linear infinite;
+    font-weight: bold;
+    margin-top: 1.5rem;
+}
+
+.modalParaDelete {
     font-weight: bold;
     margin-top: 1.5rem;
 }

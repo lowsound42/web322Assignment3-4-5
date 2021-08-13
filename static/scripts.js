@@ -378,13 +378,16 @@ function viewPlans() {
                 editButton.classList.add('btn');
                 editButton.classList.add('btn-primary');
                 editButton.classList.add('btn-sm');
+                let buttonDiv = document.createElement('div');
+                buttonDiv.setAttribute('id', 'buttonDiv');
                 innerDiv.appendChild(header);
                 innerDiv.appendChild(p1);
                 innerDiv.appendChild(p2);
                 innerDiv.appendChild(uList);
-                innerDiv.appendChild(deleteButton);
-                innerDiv.appendChild(popButton);
-                innerDiv.appendChild(editButton);
+                buttonDiv.appendChild(deleteButton);
+                buttonDiv.appendChild(popButton);
+                buttonDiv.appendChild(editButton);
+                innerDiv.appendChild(buttonDiv);
                 element.items.forEach((item) => {
                     let listItem = document.createElement('li');
                     listItem.classList.add('list-group-item');
@@ -478,6 +481,8 @@ function editPlan(e) {
     let container = document.getElementById('planContainer');
     container.innerHTML = '';
     let formContainer = document.createElement('form');
+    let formTitle = document.createElement('h5');
+    formTitle.innerHTML = 'Editing plan:';
     formContainer.setAttribute('onSubmit', `editForm(event);`);
     formContainer.setAttribute('enctype', 'multipart/form-data');
     formContainer.setAttribute('id', 'planForm');
@@ -578,6 +583,7 @@ function editPlan(e) {
     submitButton.classList.add('btn-primary');
     submitButton.classList.add('btn-sm');
     container.appendChild(formContainer);
+    formContainer.append(formTitle);
     formContainer.appendChild(idDiv);
     formContainer.appendChild(errorBox);
     formContainer.appendChild(titleDiv);
@@ -622,8 +628,7 @@ function makePopular(e) {
     }, 500);
 }
 
-function deletePlan(e) {
-    console.log(e.target);
+function ajaxDelete(e) {
     fetch('/plans/:' + e.target.value, {
         method: 'DELETE'
     }).then((response) => console.log(response));
@@ -633,11 +638,47 @@ function deletePlan(e) {
     }, 500);
 }
 
+function cancelDelete(e) {
+    let selectedPlan = document.querySelectorAll(`[value="${e.target.value}"]`);
+    console.log(selectedPlan);
+    selectedPlan[0].style.display = 'block';
+    selectedPlan[1].style.display = 'none';
+    selectedPlan[2].style.display = 'none';
+}
+
+function deletePlan(e) {
+    e.preventDefault();
+    let selectedPlan = document.querySelectorAll(`[value="${e.target.value}"]`);
+    console.log(selectedPlan[0].value);
+    console.log(selectedPlan);
+    let yesButton = document.createElement('button');
+    let noButton = document.createElement('button');
+    yesButton.innerHTML = 'Confirm';
+    noButton.innerHTML = 'Cancel';
+    yesButton.classList.add('btn');
+    yesButton.classList.add('yesButtonAdmin');
+    yesButton.classList.add('btn-danger');
+    yesButton.classList.add('btn-sm');
+    noButton.classList.add('btn');
+    noButton.classList.add('btn-secondary');
+    noButton.classList.add('btn-sm');
+    noButton.classList.add('noButtonAdmin');
+    yesButton.setAttribute('value', selectedPlan[0].value);
+    yesButton.setAttribute('onclick', 'ajaxDelete(event)');
+    noButton.setAttribute('value', selectedPlan[0].value);
+    noButton.setAttribute('onclick', 'cancelDelete(event)');
+    selectedPlan[1].parentNode.insertBefore(yesButton, selectedPlan[1]);
+    selectedPlan[1].parentNode.insertBefore(noButton, selectedPlan[1]);
+    selectedPlan[0].style.display = 'none';
+}
+
 function planForm() {
     console.log('Test');
     let container = document.getElementById('planContainer');
     container.innerHTML = '';
     let formContainer = document.createElement('form');
+    let formTitle = document.createElement('h5');
+    formTitle.innerHTML = 'Create a new plan:';
     formContainer.setAttribute('onSubmit', 'submitForm(event);');
     formContainer.setAttribute('enctype', 'multipart/form-data');
     formContainer.setAttribute('id', 'planForm');
@@ -722,6 +763,7 @@ function planForm() {
     itemsInput.setAttribute('type', 'textarea');
     itemsLabel.innerHTML = 'Item';
     container.appendChild(formContainer);
+    formContainer.append(formTitle);
     formContainer.appendChild(errorBox);
     formContainer.appendChild(titleDiv);
     formContainer.appendChild(descriptionDiv);
