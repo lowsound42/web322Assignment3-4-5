@@ -36,7 +36,6 @@ const fileFilter = (req, file, cb) => {
     ) {
         cb(null, true);
     } else {
-        console.log('what');
         cb(null, false);
     }
 };

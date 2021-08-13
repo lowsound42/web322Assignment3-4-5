@@ -47,7 +47,6 @@ module.exports.logValidation = function (data) {
 };
 
 module.exports.regValidation = function (data) {
-    console.log(data);
     let formData;
     let pError = false;
     let uError = false;

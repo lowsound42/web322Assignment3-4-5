@@ -52,15 +52,12 @@ function ensureLogin(req, res, next) {
 }
 
 router.post('/finalCheckout', (req, res) => {
-    console.log(req.body);
     User.updateOne(
         { _id: req.session.id },
         { $push: { orders: req.body.data } },
         function (err, result) {
             if (err) {
-                console.log(err);
             } else {
-                console.log('Orders updated!');
             }
         }
     );
@@ -86,7 +83,6 @@ router.get('/', (req, res) => {
 });
 
 function getPrice(input) {
-    console.log(input, 'test');
     let removeExtras = input.slice(2).slice(0, -3);
     return parseFloat(removeExtras);
 }
@@ -98,7 +94,6 @@ router.post('/plan', (req, res) => {
         .lean()
         .exec()
         .then((response) => {
-            console.log(response);
             res.json(response);
         });
 });
@@ -118,7 +113,6 @@ router.get('/cart', (req, res) => {
                         .lean()
                         .exec()
                         .then((response) => {
-                            console.log(response);
                             let priceBase =
                                 (getPrice(response.price) * 100) / 57;
                             tempCart = {
@@ -163,15 +157,12 @@ router.get('/cart', (req, res) => {
 });
 
 router.post('/addToCart', (req, res) => {
-    console.log(req.body.id);
     User.updateOne(
         { email: req.session.email },
         { $set: { cart: { planId: req.body.id } } },
         function (err, result) {
             if (err) {
-                console.log(err);
             } else {
-                console.log('Cart updated!');
             }
         }
     );
@@ -193,9 +184,7 @@ router.patch('/cart/:id', (req, res) => {
         { $set: { cart: { planId: null } } },
         function (err, result) {
             if (err) {
-                console.log(err);
             } else {
-                console.log('Cart updated!');
                 res.json({ message: 'cart updated' });
             }
         }
@@ -203,12 +192,10 @@ router.patch('/cart/:id', (req, res) => {
 });
 
 router.delete('/plans/:id', (req, res) => {
-    console.log(req.params.id.substr(1));
     Plan.deleteOne({ _id: req.params.id.substr(1) }, function (err) {
         if (err) {
             return handleError(err);
         } else {
-            console.log('deleted!');
             res.send({ message: 'deleted' });
         }
     });
@@ -216,15 +203,14 @@ router.delete('/plans/:id', (req, res) => {
 
 router.patch('/plans/:id', (req, res) => {
     const filter = { _id: req.params.id.substr(1) };
-    console.log('filter:', filter);
+
     const update = { chosenOne: true };
-    console.log(req.params);
+
     Plan.updateOne(
         { chosenOne: true },
         { $set: { chosenOne: false } },
         function (err, result) {
             if (err) {
-                console.log(err);
             } else {
                 Plan.updateOne(
                     { _id: req.params.id.substr(1) },
@@ -233,7 +219,6 @@ router.patch('/plans/:id', (req, res) => {
                     .lean()
                     .exec()
                     .then((response) => {
-                        console.log(response);
                         res.send(response);
                     });
             }
@@ -245,7 +230,7 @@ router.get('/plans', (req, res) => {
     let customerSesh = false;
     let adminSesh = false;
     let noUser = true;
-    console.log(req.session.admin);
+
     if (req.session.email) {
         if (req.session.admin) {
             adminSesh = true;
@@ -304,7 +289,7 @@ router.get('/plans', (req, res) => {
 
 router.post('/editPlan', upload, (req, res) => {
     let priceStr = String(req.body.price);
-    console.log(req.body);
+
     let tempArray = [];
     JSON.parse(req.body.items).forEach((element) => {
         tempArray.push(element);
@@ -333,7 +318,6 @@ router.post('/editPlan', upload, (req, res) => {
                 .lean()
                 .exec()
                 .then((response) => {
-                    console.log(response);
                     newPlan.save((err) => {
                         if (err) {
                             res.send({ error: 'Error saving the plan' });
@@ -370,10 +354,9 @@ router.get('/userDetails', (req, res) => {
 
 router.post('/uploadPlan', upload, (req, res) => {
     Plan.countDocuments({}, function (err, count) {
-        console.log(count);
         if (count < 6) {
             let priceStr = String(req.body.price);
-            console.log(req.body.items);
+
             let tempArray = [];
             JSON.parse(req.body.items).forEach((element) => {
                 tempArray.push(element);
@@ -404,7 +387,6 @@ router.post('/uploadPlan', upload, (req, res) => {
                             if (doc) {
                                 res.send({ exists: 'the plan already exists' });
                             } else {
-                                console.log('happening');
                                 newPlan.save((err) => {
                                     if (err) {
                                         res.send({
@@ -440,7 +422,6 @@ router.get('/login', (req, res) => {
 
 router.get('/registration', (req, res) => {
     if (req.session.email) {
-        console.log('test');
         res.redirect('/dashboard');
     }
     const page = { registration: true };
@@ -470,7 +451,6 @@ router.post('/login', (req, res) => {
                         function (err, response) {
                             let userCart = false;
                             if (response) {
-                                console.log(user);
                                 req.session = {
                                     id: user._id,
                                     firstName: user.firstname,
@@ -496,7 +476,7 @@ router.post('/login', (req, res) => {
                     );
                 } else {
                     const dbError = { noUserError: true };
-                    console.log('no user found');
+
                     res.render('login', {
                         data: formData,
                         dbError: dbError,
@@ -526,7 +506,6 @@ router.get('/dashboard', ensureLogin, (req, res) => {
             customer: req.session.customer
         });
     } else {
-        console.log(req.session);
         res.render('dashboard', {
             firstName: req.session.firstName,
             lastName: req.session.lastName,
@@ -575,7 +554,6 @@ router.post('/registration', (req, res) => {
             });
             userInfo.save((err, userNew) => {
                 if (err) {
-                    console.log(err);
                     res.render('registration', {
                         data: formData,
                         dbError: { regError: true },
@@ -595,7 +573,7 @@ router.post('/registration', (req, res) => {
                         origin: 2,
                         email: formData.emailadd
                     };
-                    console.log('User saved!');
+
                     res.redirect('dashboard');
                 }
             });
