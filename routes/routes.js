@@ -336,9 +336,7 @@ router.post('/editPlan', upload, (req, res) => {
                     console.log(response);
                     newPlan.save((err) => {
                         if (err) {
-                            res.send({
-                                error: 'Error saving the plan'
-                            });
+                            res.send({ error: 'Error saving the plan' });
                         } else {
                             res.send({ success: 'Plan saved!' });
                         }
@@ -378,7 +376,7 @@ router.post('/uploadPlan', upload, (req, res) => {
             console.log(req.body.items);
             let tempArray = [];
             JSON.parse(req.body.items).forEach((element) => {
-                if (element.length > 0) tempArray.push(element);
+                tempArray.push(element);
             });
             if (req.file !== undefined) {
                 var newPlan = new Plan({
@@ -406,6 +404,7 @@ router.post('/uploadPlan', upload, (req, res) => {
                             if (doc) {
                                 res.send({ exists: 'the plan already exists' });
                             } else {
+                                console.log('happening');
                                 newPlan.save((err) => {
                                     if (err) {
                                         res.send({

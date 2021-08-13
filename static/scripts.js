@@ -406,7 +406,6 @@ function viewPlans() {
 
 function editForm(e) {
     e.preventDefault();
-    console.log(e.target.elements[0].value);
     let submitBut = document.getElementById('submitBut');
     submitBut.disabled = true;
     let container = document.getElementById('planForm');
@@ -432,14 +431,21 @@ function editForm(e) {
 
     let itemsArray = [];
     itemsArray.push(e.target.elements[5].value);
-    let count = e.target.elements.length;
-    console.log(count);
-    for (let i = 6; i <= count - 3; i++) {
-        if (e.target.elements[6].type === 'text') {
-            itemsArray.push(e.target.elements[i].value);
-        }
+    if (e.target.elements[6].type === 'text') {
+        itemsArray.push(e.target.elements[6].value);
     }
-
+    if (e.target.elements[7].type === 'text') {
+        itemsArray.push(e.target.elements[7].value);
+    }
+    if (e.target.elements[8] && e.target.elements[8].type === 'text') {
+        itemsArray.push(e.target.elements[8].value);
+    }
+    if (e.target.elements[9] && e.target.elements[9].type === 'text') {
+        itemsArray.push(e.target.elements[9].value);
+    }
+    if (e.target.elements[10] && e.target.elements[10].type === 'text') {
+        itemsArray.push(e.target.elements[10].value);
+    }
     formData.append('_id', e.target.elements[0].value);
     formData.append('title', e.target.elements[1].value);
     formData.append('description', e.target.elements[2].value);
@@ -460,15 +466,9 @@ function editForm(e) {
                 submitBut.disabled = false;
                 errorBox.innerHTML =
                     'Plan must have an image and image must be a valid format (jpg/jpeg/gif)';
-                setTimeout(() => {
-                    viewPlans();
-                }, 1300);
             } else if (result.validError) {
                 submitBut.disabled = false;
                 errorBox.innerHTML = 'Please enter all the data for the plan';
-                setTimeout(() => {
-                    viewPlans();
-                }, 1300);
             } else {
                 setTimeout(() => {
                     viewPlans();
@@ -478,13 +478,6 @@ function editForm(e) {
 }
 
 function editPlan(e) {
-    let n = 0;
-    if (
-        e.target.parentElement.parentElement.children[0].innerHTML ===
-        'Our most POPULAR plan!'
-    ) {
-        n = 1;
-    }
     let container = document.getElementById('planContainer');
     container.innerHTML = '';
     let formContainer = document.createElement('form');
@@ -527,37 +520,15 @@ function editPlan(e) {
     addItem.classList.add('btn-primary');
     addItem.classList.add('btn-sm');
     addItem.classList.add('addItemButton');
-    addItem.innerHTML = 'Add more items';
-    addItem.setAttribute('type', 'button');
-    addItem.setAttribute('onclick', 'moreItems();');
-    addItem.classList.add('itemButton');
-    let cancelButton = document.createElement('button');
-    cancelButton.classList.add('btn');
-    cancelButton.classList.add('btn-primary');
-    cancelButton.classList.add('btn-sm');
-    cancelButton.classList.add('cancelButton');
-    cancelButton.innerHTML = 'Cancel';
-    cancelButton.setAttribute('type', 'button');
-    cancelButton.setAttribute('onclick', 'viewPlans();');
     let picDiv = document.createElement('div');
     let picDivInner = document.createElement('div');
     let titleLabel = document.createElement('label');
     let titleInput = document.createElement('input');
-    titleInput.value =
-        e.target.parentElement.parentElement.children[n + 1].innerHTML;
-    titleInput.readOnly = true;
     let descriptionLabel = document.createElement('label');
     let descriptionInput = document.createElement('input');
-    descriptionInput.value =
-        e.target.parentElement.parentElement.children[n + 2].innerHTML;
     let priceLabel = document.createElement('label');
     let priceInput = document.createElement('input');
-    priceInput.value =
-        e.target.parentElement.parentElement.children[n + 3].innerHTML;
     let itemsLabel = document.createElement('label');
-    let numItems =
-        e.target.parentElement.parentElement.children[n + 4].children.length;
-
     let itemsInput = document.createElement('input');
     let picLabel = document.createElement('label');
     let picInput = document.createElement('input');
@@ -578,8 +549,8 @@ function editPlan(e) {
     descriptionDiv.classList.add('row');
     descriptionDivInner.classList.add('col-lg-12');
     descriptionDivInner.classList.add('form-group');
-    descriptionLabel.setAttribute('for', 'description');
-    descriptionInput.setAttribute('name', 'description');
+    descriptionLabel.setAttribute('for', 'title');
+    descriptionInput.setAttribute('name', 'title');
     descriptionInput.classList.add('form-control');
     descriptionInput.setAttribute('type', 'text');
     descriptionLabel.innerHTML = 'Description';
@@ -603,36 +574,14 @@ function editPlan(e) {
     itemsDiv.classList.add('row');
     itemsDivInner.classList.add('col-lg-12');
     itemsDivInner.classList.add('form-group');
-    itemsLabel.setAttribute('for', 'items');
-    itemsInput.setAttribute('name', 'items');
+    itemsLabel.setAttribute('for', 'title');
+    itemsInput.setAttribute('name', 'title');
     itemsInput.classList.add('form-control');
     itemsInput.setAttribute('type', 'textarea');
     itemsLabel.innerHTML = 'Item';
     submitButton.classList.add('btn');
     submitButton.classList.add('btn-primary');
     submitButton.classList.add('btn-sm');
-    for (let i = 0; i < numItems; i++) {
-        let itemsInner = document.createElement('li');
-        let itemsLabel = document.createElement('label');
-        itemsLabel.setAttribute('for', 'items');
-        itemsLabel.innerHTML = 'Item';
-        let inputBox = document.createElement('input');
-        inputBox.setAttribute('name', 'title');
-        inputBox.classList.add('form-control');
-        inputBox.setAttribute('type', 'textarea');
-        inputBox.value =
-            e.target.parentElement.parentElement.children[n + 4].children[
-                i
-            ].innerHTML;
-        if (
-            e.target.parentElement.parentElement.children[n + 4].children[i]
-                .innerHTML !== ''
-        ) {
-            itemsInner.appendChild(itemsLabel);
-            itemsInner.appendChild(inputBox);
-            itemsDiv.appendChild(itemsInner);
-        }
-    }
     container.appendChild(formContainer);
     formContainer.append(formTitle);
     formContainer.appendChild(idDiv);
@@ -646,18 +595,24 @@ function editPlan(e) {
     titleDiv.appendChild(titleDivInner);
     descriptionDiv.appendChild(descriptionDivInner);
     priceDiv.appendChild(priceDivInner);
-    picDivInner.appendChild(picLabel);
-    picDivInner.appendChild(picInput);
     picDiv.appendChild(picDivInner);
+    itemsDiv.appendChild(itemsDivInner);
     titleDivInner.appendChild(titleLabel);
     titleDivInner.appendChild(titleInput);
     descriptionDivInner.appendChild(descriptionLabel);
     descriptionDivInner.appendChild(descriptionInput);
     priceDivInner.appendChild(priceLabel);
     priceDivInner.appendChild(priceInput);
-    formContainer.appendChild(cancelButton);
     formContainer.appendChild(submitButton);
+    itemsDivInner.appendChild(itemsLabel);
+    itemsDivInner.appendChild(itemsInput);
     itemsDiv.appendChild(addItem);
+    addItem.innerHTML = 'Add more items';
+    addItem.setAttribute('type', 'button');
+    addItem.setAttribute('onclick', 'moreItems();');
+    addItem.classList.add('itemButton');
+    picDivInner.appendChild(picLabel);
+    picDivInner.appendChild(picInput);
 }
 
 function makePopular(e) {
