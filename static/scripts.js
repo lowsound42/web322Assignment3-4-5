@@ -222,14 +222,17 @@ function checkOut(event) {
                     event.parentElement.children[0].innerHTML
                 );
                 sumPlan.innerHTML = data.title + ' ' + sumTotal.toFixed(2);
-                sumPlan.style.textAlign = 'center';
+                sumPlan.style.fontWeight = 'bold';
                 if (sumPromo) {
                     sumPromo.innerHTML = `PROMO: WEB322  -$${(
                         sumTotal * 0.35
                     ).toFixed(2)}`;
+                    sumPromo.style.textDecoration = 'underline';
                     let finalTotal = (sumTotal - sumTotal * 0.35).toFixed(2);
                     tempData.finalPrice = finalTotal;
                     sumFinal.innerHTML = `TOTAL: ${finalTotal}`;
+                    sumFinal.style.fontWeight = 'bold';
+                    sumFinal.style.color = 'green';
                 }
                 let sumButton = document.getElementById('summaryButton');
                 sumButton.innerHTML = '';
@@ -237,6 +240,9 @@ function checkOut(event) {
                 sumSubmitButton.addEventListener('click', function () {
                     finalCheckout(tempData);
                 });
+                sumSubmitButton.classList.add('btn');
+                sumSubmitButton.classList.add('btn-primary');
+                sumSubmitButton.classList.add('btn-sm');
                 sumSubmitButton.innerHTML = 'Checkout';
                 sumButton.appendChild(sumSubmitButton);
             }
@@ -272,7 +278,7 @@ function emptyCart(data) {
         .then((result) => {
             setTimeout(() => {
                 location.reload();
-            }, 1000);
+            }, 200);
         })
         .catch((err) => console.log(err));
 }
