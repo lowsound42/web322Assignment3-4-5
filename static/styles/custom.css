@@ -229,14 +229,28 @@
     font-size: 0.7rem;
 }
 
+.adminDashMain {
+    width: 655px;
+    margin: auto;
+}
+
 @media only screen and (max-width: 750px) {
     #planDetails {
         display: flex;
         flex-direction: column;
     }
 
+    .adminDashMain {
+        width: 90%;
+        margin: auto;
+    }
+
     .adminContainer {
         flex-direction: column;
+    }
+
+    .addItemButton {
+        width: 60%;
     }
 
     .adminContainer #create {

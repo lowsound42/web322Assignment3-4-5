@@ -506,6 +506,7 @@ function editPlan(e) {
     addItem.classList.add('btn');
     addItem.classList.add('btn-primary');
     addItem.classList.add('btn-sm');
+    addItem.classList.add('addItemButton');
     let picDiv = document.createElement('div');
     let picDivInner = document.createElement('div');
     let titleLabel = document.createElement('label');
@@ -649,6 +650,7 @@ function planForm() {
     addItem.classList.add('btn');
     addItem.classList.add('btn-primary');
     addItem.classList.add('btn-sm');
+    addItem.classList.add('addItemButton');
     let picDiv = document.createElement('div');
     let picDivInner = document.createElement('div');
     let titleLabel = document.createElement('label');
@@ -817,7 +819,7 @@ function submitForm(e) {
                 modal.style.display = 'none';
                 submitBut.disabled = false;
                 errorBox.innerHTML =
-                    'Plan must have an image and image must be a valid format (jpg/jpeg/gif)';
+                    'Plan must have an image and image must be a valid format (jpg/jpeg/gif/png)';
                 setTimeout(() => {
                     planForm();
                 }, 2000);
