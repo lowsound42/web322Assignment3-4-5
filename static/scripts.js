@@ -44,14 +44,17 @@ function getName() {
     fetch('/userDetails')
         .then((response) => response.json())
         .then((data) => {
-            let holder = document.getElementById('planHolder');
-            if (holder) holder.innerHTML = `Web hosting plan: ${data.title}`;
-        })
-        .catch((err) => {
-            let holder = document.getElementById('planHolder');
-            if (holder)
-                holder.innerHTML =
-                    "Select a plan to purchase from the 'Plans' page.";
+            console.log(data);
+            if (data.message) {
+                let holder = document.getElementById('planHolder');
+                if (holder)
+                    holder.innerHTML =
+                        "Select a plan to purchase from the 'Plans' page.";
+            } else {
+                let holder = document.getElementById('planHolder');
+                if (holder)
+                    holder.innerHTML = `Web hosting plan: ${data.title}`;
+            }
         });
 }
 
@@ -70,10 +73,10 @@ function addToCart(id) {
                 .querySelectorAll('.purchaseButton')
                 .forEach((element) => element.setAttribute('disabled', 'true'));
             let banner = document.getElementById('purchaseConfirm');
-            banner.innerHTML = 'YOU GOT A THING';
+            banner.innerHTML = 'Check your cart for your current order';
             banner.style.display = 'block';
             banner.style.textAlign = 'center';
-            banner.style.backgroundColor = 'cyan';
+            banner.style.backgroundColor = 'black';
             banner.style.color = 'white';
             banner.style.height = '4rem';
             banner.style.position = 'absolute';
@@ -88,7 +91,7 @@ function addToCart(id) {
                         console.log(element);
                         element.disabled = false;
                     });
-            }, 2000);
+            }, 3000);
         })
         .then((final) => checkCart(false));
 }
@@ -377,6 +380,20 @@ function viewPlans() {
 
 function editForm(e) {
     e.preventDefault();
+    let submitBut = document.getElementById('submitBut');
+    submitBut.disabled = true;
+    let container = document.getElementById('planForm');
+    let modal = document.createElement('div');
+    modal.setAttribute('id', 'modal');
+    modal.style.position = 'absolute';
+    modal.style.width = '80%';
+    modal.style.height = '10rem';
+    modal.style.backgroundColor = 'white';
+    modal.style.top = '10%';
+    modal.style.border = '1px black solid';
+    modal.style.textAlign = 'center';
+    modal.innerHTML = 'LOADING...';
+    container.appendChild(modal);
     console.log(e.target);
     var formData = new FormData();
 
@@ -409,10 +426,23 @@ function editForm(e) {
         body: formData
     })
         .then((response) => response.json())
-        .then((result) => console.log(result));
-    setTimeout(() => {
-        viewPlans();
-    }, 2000);
+        .then((result) => {
+            let modal = document.getElementById('modal');
+            modal.style.display = 'none';
+            let errorBox = document.getElementById('errorBox');
+            if (result.picError) {
+                submitBut.disabled = false;
+                errorBox.innerHTML =
+                    'Plan must have an image and image must be a valid format (jpg/jpeg/gif)';
+            } else if (result.validError) {
+                submitBut.disabled = false;
+                errorBox.innerHTML = 'Please enter all the data for the plan';
+            } else {
+                setTimeout(() => {
+                    viewPlans();
+                }, 200);
+            }
+        });
 }
 
 function editPlan(e) {
@@ -423,6 +453,7 @@ function editPlan(e) {
     formContainer.setAttribute('enctype', 'multipart/form-data');
     formContainer.setAttribute('id', 'planForm');
     formContainer.classList.add('centerBox');
+    formContainer.style.position = 'relative';
     let idDiv = document.createElement('div');
     let idDivInner = document.createElement('div');
     idDiv.classList.add('row');
@@ -468,6 +499,10 @@ function editPlan(e) {
     let picInput = document.createElement('input');
     let submitButton = document.createElement('input');
     submitButton.setAttribute('type', 'submit');
+    submitButton.setAttribute('id', 'submitBut');
+    let errorBox = document.createElement('div');
+    errorBox.classList.add('errorBox');
+    errorBox.setAttribute('id', 'errorBox');
     titleDiv.classList.add('row');
     titleDivInner.classList.add('col-lg-12');
     titleDivInner.classList.add('form-group');
@@ -508,12 +543,13 @@ function editPlan(e) {
     itemsInput.setAttribute('name', 'title');
     itemsInput.classList.add('form-control');
     itemsInput.setAttribute('type', 'textarea');
-    itemsLabel.innerHTML = 'Items';
+    itemsLabel.innerHTML = 'Item';
     submitButton.classList.add('btn');
     submitButton.classList.add('btn-primary');
     submitButton.classList.add('btn-sm');
     container.appendChild(formContainer);
     formContainer.appendChild(idDiv);
+    formContainer.appendChild(errorBox);
     formContainer.appendChild(titleDiv);
     formContainer.appendChild(descriptionDiv);
     formContainer.appendChild(priceDiv);
@@ -535,7 +571,7 @@ function editPlan(e) {
     itemsDivInner.appendChild(itemsLabel);
     itemsDivInner.appendChild(itemsInput);
     itemsDiv.appendChild(addItem);
-    addItem.innerHTML = 'Add more stuff';
+    addItem.innerHTML = 'Add more items';
     addItem.setAttribute('type', 'button');
     addItem.setAttribute('onclick', 'moreItems();');
     addItem.classList.add('itemButton');
@@ -576,6 +612,7 @@ function planForm() {
     formContainer.setAttribute('enctype', 'multipart/form-data');
     formContainer.setAttribute('id', 'planForm');
     formContainer.classList.add('centerBox');
+    formContainer.style.position = 'relative';
     let titleDiv = document.createElement('div');
     let titleDivInner = document.createElement('div');
     let descriptionDiv = document.createElement('div');
@@ -604,10 +641,14 @@ function planForm() {
     let picLabel = document.createElement('label');
     let picInput = document.createElement('input');
     let submitButton = document.createElement('input');
+    let errorBox = document.createElement('div');
+    errorBox.classList.add('errorBox');
+    errorBox.setAttribute('id', 'errorBox');
     submitButton.setAttribute('type', 'submit');
     submitButton.classList.add('btn');
     submitButton.classList.add('btn-primary');
     submitButton.classList.add('btn-sm');
+    submitButton.setAttribute('id', 'submitBut');
     titleDiv.classList.add('row');
     titleDivInner.classList.add('col-lg-12');
     titleDivInner.classList.add('form-group');
@@ -648,8 +689,9 @@ function planForm() {
     itemsInput.setAttribute('name', 'title');
     itemsInput.classList.add('form-control');
     itemsInput.setAttribute('type', 'textarea');
-    itemsLabel.innerHTML = 'Items';
+    itemsLabel.innerHTML = 'Item';
     container.appendChild(formContainer);
+    formContainer.appendChild(errorBox);
     formContainer.appendChild(titleDiv);
     formContainer.appendChild(descriptionDiv);
     formContainer.appendChild(priceDiv);
@@ -670,7 +712,7 @@ function planForm() {
     itemsDivInner.appendChild(itemsLabel);
     itemsDivInner.appendChild(itemsInput);
     itemsDiv.appendChild(addItem);
-    addItem.innerHTML = 'Add more stuff';
+    addItem.innerHTML = 'Add more items';
     addItem.setAttribute('type', 'button');
     addItem.setAttribute('onclick', 'moreItems();');
     addItem.classList.add('itemButton');
@@ -702,7 +744,22 @@ function moreItems() {
 
 function submitForm(e) {
     e.preventDefault();
-    let data;
+    let submitBut = document.getElementById('submitBut');
+    submitBut.disabled = true;
+    let errorBox = document.getElementById('errorBox');
+    let container = document.getElementById('planForm');
+    let modal = document.createElement('div');
+    modal.setAttribute('id', 'modal');
+    modal.style.position = 'absolute';
+    modal.style.width = '80%';
+    modal.style.height = '10rem';
+    modal.style.backgroundColor = 'white';
+    modal.style.top = '10%';
+    modal.style.border = '1px black solid';
+    modal.style.textAlign = 'center';
+    modal.innerHTML = 'LOADING...';
+    container.appendChild(modal);
+    errorBox.innerHTML = '';
     var formData = new FormData();
 
     let itemsArray = [];
@@ -715,8 +772,6 @@ function submitForm(e) {
         }
     }
 
-    console.log(itemsArray);
-
     formData.append('title', e.target.elements[0].value);
     formData.append('description', e.target.elements[1].value);
     formData.append('price', e.target.elements[2].value);
@@ -728,8 +783,21 @@ function submitForm(e) {
         body: formData
     })
         .then((response) => response.json())
-        .then((result) => console.log(result));
-    setTimeout(() => {
-        viewPlans();
-    }, 2000);
+        .then((result) => {
+            let errorBox = document.getElementById('errorBox');
+            let modal = document.getElementById('modal');
+            modal.style.display = 'none';
+            if (result.picError) {
+                submitBut.disabled = false;
+                errorBox.innerHTML =
+                    'Plan must have an image and image must be a valid format (jpg/jpeg/gif)';
+            } else if (result.validError) {
+                submitBut.disabled = false;
+                errorBox.innerHTML = 'Please enter all the data for the plan';
+            } else {
+                setTimeout(() => {
+                    viewPlans();
+                }, 200);
+            }
+        });
 }

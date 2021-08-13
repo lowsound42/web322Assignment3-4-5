@@ -147,6 +147,8 @@
 .itemButton {
     height: 2rem;
     width: 20%;
+    margin-left: 0.7rem;
+    margin-top: 0.5rem;
 }
 
 #planTitle {
@@ -166,6 +168,10 @@
 #planDetails {
     display: flex;
     flex-direction: row;
+}
+
+.purchaseButton {
+    margin-bottom: 2rem;
 }
 
 .priceHolder:hover {
